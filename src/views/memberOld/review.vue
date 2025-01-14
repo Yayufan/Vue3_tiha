@@ -6,42 +6,28 @@
 
       <!-- 如果要用兩種註冊方式再考慮使用這個 -->
       <div class="function-bar">
-        <div class="display-count">
-          未審核人數為： {{ memberCount }} 人
-        </div>
-        <div class="btn-box">
-          <el-button type="primary" @click="approvalList" :disabled="selectList.length > 0 ? false : true">
-            批量通過<el-icon class="el-icon--right">
-              <Plus />
-            </el-icon>
-          </el-button>
+        <el-button type="primary" @click="approvalList" :disabled="selectList.length > 0 ? false : true">
+          批量通過<el-icon class="el-icon--right">
+            <Plus />
+          </el-icon>
+        </el-button>
 
-          <el-button type="danger" @click="failedList" :disabled="selectList.length > 0 ? false : true">
-            批量駁回<el-icon class="el-icon--right">
-              <Delete />
-            </el-icon>
-          </el-button>
-        </div>
-      </div>
-
-      <div class="search-bar">
-        <el-input v-model="input" style="width: 240px" placeholder="輸入內容,Enter查詢"
-          @keydown.enter="getMember(currentPage, 10)" />
+        <el-button type="danger" @click="failedList" :disabled="selectList.length > 0 ? false : true">
+          批量否決<el-icon class="el-icon--right">
+            <Delete />
+          </el-icon>
+        </el-button>
       </div>
 
       <el-table class="news-table" :data="memberList.records" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="name" label="簽署人" width="90" />
-        <el-table-column label="性別" width="90">
-          <template #default="scope">
-            <el-text v-if="scope.row.genderOther">{{ scope.row.genderOther }}</el-text>
-            <el-text v-else>{{ scope.row.gender }}</el-text>
-          </template>
-        </el-table-column>
+        <el-table-column fixed prop="name" label="姓名" width="90" />
+        <el-table-column prop="email" label="信箱" min-width="150" />
+        <el-table-column prop="department" label="院所" min-width="150" />
+        <el-table-column prop="jobTitle" label="職稱" width="120" />
         <el-table-column prop="phone" label="手機" width="120" />
-        <el-table-column prop="birthday" label="生日" width="120" />
-        <el-table-column prop="idCard" label="身份證字號" width="110" />
-        <!-- <el-table-column prop="email" label="信箱" width="220" /> -->
+
+
 
         <el-table-column fixed="right" label="操作" width="150">
           <!-- 透過#default="scope" , 獲取到當前的對象值 , scope.row則是拿到當前那個row的數據  -->
@@ -49,7 +35,7 @@
             <el-button type="primary" size="small" @click="approvalRow(scope.row)">
               通過
             </el-button>
-            <el-button type="danger" size="small" @click="failedRow(scope.row)">
+            <el-button type="danger" size="small" @click="failedRow(scope.row.memberId)">
               不通過</el-button>
           </template>
         </el-table-column>
@@ -75,8 +61,7 @@
 import { ref, reactive } from 'vue'
 import { Delete, Plus } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
-// import { getOrganDonationConsentCountByStatusApi, getOrganDonationConsentByPaginationByStatusApi, updateOrganDonationConsentApi, batchUpdateOrganDonationConsentApi } from '@/api/organDonationConsent'
-import { getMemberApi, getAllMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, getMemberCountApi, getMemberCountByStatusApi, updateMemberApi, batchUpdateMemberApi, deleteMemberApi, batchDeleteMemberApi, downloadMemberExcelApi } from '@/api/member'
+import { getMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, addMemberApi, updateMemberApi, batchUpdateMemberApi, deleteMemberApi, batchDeleteMemberApi } from '@/api/member'
 
 
 //獲取路由
@@ -87,42 +72,28 @@ const router = useRouter()
 const formLabelWidth = '140px'
 
 
+
 /**--------------顯示數據相關---------------------------- */
 
 //設定分頁組件,currentPage當前頁數
 let currentPage = ref(1)
 
-//獲取未審核的同意書
-let memberCount = ref(0)
 
-//查詢內容
-let input = ref('')
-
-
-//獲取未審核的同意書List
+//獲取的最新會員List
 let memberList = reactive<Record<string, any>>({
   records: [{
-    name: '',
-    email: '',
-    phone: '',
-    department: '',
-    contactAddress: '',
-    jobTitle: '',
-    gender: '',
-    genderOther: '',
-    idCard: '',
-    birthday: '',
+    name: '孫悟空',
+    email: 'kamikazey2200@gmail.com',
+    department: '長庚泌尿科',
+    jobTitle: '主治醫師',
+    phone: '0985225586'
+
   }]
 })
 
 const getMember = async (page: number, size: number) => {
-  let res = await getMemberByPaginationByStatusApi(page, size, "0", input.value)
+  let res = await getMemberByPaginationByStatusApi(page, size, "0")
   Object.assign(memberList, res.data)
-}
-
-const getMemberCount = async () => {
-  let res = await getMemberCountByStatusApi("0")
-  memberCount.value = res.data
 }
 
 
@@ -133,63 +104,47 @@ watch(currentPage, (value, oldValue) => {
 
 /** --------- 審核通過/駁回 相關variable及function -------------- */
 
-//勾選的對象列表
-let selectList = reactive<Record<string, any>[]>([])
+//要刪除的對象列表
+let selectList = reactive([])
 
 //當checkbox狀態改變時的function,val是一個數組對象
 const handleSelectionChange = (val: any) => {
+  console.log("checkBox狀態", val)
   //重製selectList,移除所有屬性
   selectList.length = 0
   Object.assign(selectList, val)
 }
 
-//駁回同意書申請
-const failedRow = (member: any): void => {
-  ElMessageBox.confirm(`確定要駁回此申請嗎？`, '確認廢除', {
+//駁回會員申請
+const failedRow = (id: number): void => {
+  ElMessageBox.confirm(`確定要駁回此會員申請嗎？`, '確認駁回', {
     confirmButtonText: '確定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
-
-    Object.assign(updateMember, member)
-    //將審核狀態更改為駁回
-    updateMember.status = "2"
-
     // 用户選擇確認，繼續操作
-    await updateMemberApi(updateMember)
-    ElMessage.success('廢除成功');
-
+    console.log(id)
+    await deleteMemberApi(id)
+    ElMessage.success('刪除成功');
     getMember(1, 10)
-
   }).catch((err) => {
     console.log(err)
   });
 }
 
-//批量駁回同意書申請的function
+//批量駁回會員申請的function
 const failedList = () => {
   if (selectList.length >= 1) {
-    ElMessageBox.confirm(`確定要駁回${selectList.length}個申請嗎？`, '確認駁回', {
+    ElMessageBox.confirm(`確定要駁回這${selectList.length}個會員申請嗎？`, '確認刪除', {
       confirmButtonText: '確定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(async () => {
-
-      //從List 中透過map方法映射資料, 修改status狀態 和 donateOrgans轉為array 並傳給後端
-      let transData = selectList.map(item => {
-        return {
-          ...(item),
-          status: "2",
-          // donateOrgans: item.donateOrgans ? item.donateOrgans.split(",") : [] // 確保 donateOrgans 存在
-        };
-      })
-
-      await batchUpdateMemberApi(transData)
-      ElMessage.success("批量審核駁回")
-
-
+      //提取idList
+      let deleteIdList = selectList.map((item: { memberId: string }) => item.memberId)
+      await batchDeleteMemberApi(deleteIdList)
+      ElMessage.success('批量刪除成功');
       getMember(1, 10)
-
     }).catch((err) => {
       console.log(err)
     })
@@ -202,8 +157,8 @@ const failedList = () => {
 
 /**------------編輯內容相關操作---------------------- */
 
-let updateMember = reactive<Record<string, any>>({
-
+let updateMember = reactive({
+  status: ""
 })
 
 //會員審核通過
@@ -212,8 +167,8 @@ const approvalRow = async (member: any) => {
   Object.assign(updateMember, member)
   //將審核狀態更改為通過
   updateMember.status = "1"
-
   try {
+
     await updateMemberApi(updateMember)
     ElMessage.success("審核通過")
     getMember(currentPage.value, 10)
@@ -226,16 +181,14 @@ const approvalRow = async (member: any) => {
 const approvalList = async () => {
   if (selectList.length >= 1) {
 
-    //從List 中透過map方法映射資料, 修改status狀態 和 donateOrgans轉為array 並傳給後端
+    //從List 中透過map方法映射資料, 修改status狀態傳給後端
     let transData = selectList.map(item => {
-      return {
-        ...(item),
-        status: "1",
-      };
+      return { ...(item as object), status: "1" };
     })
 
     try {
       await batchUpdateMemberApi(transData)
+
       ElMessage.success("批量審核通過")
       getMember(currentPage.value, 10)
 
@@ -251,7 +204,6 @@ const approvalList = async () => {
 /**-------------------掛載頁面時執行-------------------- */
 
 onMounted(() => {
-  getMemberCount()
   getMember(1, 10)
 })
 
@@ -281,21 +233,8 @@ onMounted(() => {
 
 
 .function-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   text-align: right;
   margin-bottom: 1%;
-
-
-  .display-count {
-    margin-left: 1%;
-  }
-
-}
-
-.search-bar {
-  margin-left: 1%;
 }
 
 .news-table {

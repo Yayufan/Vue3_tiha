@@ -7,68 +7,27 @@
 
       <!-- 如果要用兩種註冊方式再考慮使用這個 -->
       <div class="function-bar">
-        <div class="display-count">
-          <div class="total-count">總數量為： {{ memberCount }} 人</div>
-          <div>當前查詢數量為： {{ memberList.total }} 人</div>
-        </div>
+        <el-button type="primary" @click="toggleAddDialog">
+          新增會員<el-icon class="el-icon--right">
+            <Plus />
+          </el-icon>
+        </el-button>
 
-        <div class="btn-box">
-
-          <!-- <el-button type="primary" @click="toggleAddDialog">
-            新增<el-icon class="el-icon--right">
-              <Plus />
-            </el-icon>
-          </el-button> -->
-
-          <el-button type="danger" @click="deleteList" :disabled="deleteSelectList.length > 0 ? false : true">
-            刪除<el-icon class="el-icon--right">
-              <Delete />
-            </el-icon>
-          </el-button>
-
-          <el-button type="success" @click="downloadExcel">下載Excel</el-button>
-        </div>
-      </div>
-
-      <div class="search-bar">
-        <el-input v-model="input" style="width: 240px" placeholder="輸入內容,Enter查詢"
-          @keydown.enter="getMemberByPagination(currentPage, 10)" />
-
-        <el-select v-model="filterStatus" style="width: 240px;" class="filter-status" placeholder="請選擇">
-          <el-option label="全選" value="">
-            <span>全選</span>
-          </el-option>
-          <el-option label="未審核" value="0">
-            <span>未審核</span>
-          </el-option>
-          <el-option label="審核通過" value="1">
-            <span style="color:green;">審核通過</span>
-          </el-option>
-          <el-option label="駁回申請" value="2">
-            <span style="color:red;">駁回申請</span>
-          </el-option>
-
-          <template #label="{ label, value }">
-            <span :style="{ color: value == '1' ? 'green' : value == '-1' ? 'red' : 'black' }">{{ label }}</span>
-          </template>
-        </el-select>
-
+        <el-button type="danger" @click="deleteList" :disabled="deleteSelectList.length > 0 ? false : true">
+          刪除會員<el-icon class="el-icon--right">
+            <Delete />
+          </el-icon>
+        </el-button>
       </div>
 
       <el-table class="member-table" :data="memberList.records" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="name" label="簽署人" width="90" />
+        <el-table-column fixed prop="name" label="姓名" width="90" />
+        <el-table-column prop="email" label="信箱" min-width="150" />
+        <el-table-column prop="department" label="院所" min-width="150" />
+        <el-table-column prop="jobTitle" label="職稱" width="120" />
         <el-table-column prop="phone" label="手機" width="120" />
-        <el-table-column prop="birthday" label="生日" width="120" />
-        <el-table-column prop="idCard" label="身份證字號" width="110" />
-        <el-table-column prop="email" label="信箱" width="150" />
-        <el-table-column prop="status" label="審核狀態" min-width="120">
-          <template #default="scope">
-            <span v-if="scope.row.status == '1'" style="color: green;">審核通過</span>
-            <span v-else-if="scope.row.status == '2'" style="color: red;">駁回申請</span>
-            <span v-else>未審核</span>
-          </template>
-        </el-table-column>
+
 
 
         <el-table-column fixed="right" label="操作" width="120">
@@ -79,7 +38,6 @@
             </el-button>
             <el-button link type="danger" size="small" @click="deleteRow(scope.row.memberId)">
               Delete</el-button>
-
           </template>
         </el-table-column>
       </el-table>
@@ -97,9 +55,9 @@
 
 
       <!-- 新增對話框 -->
-      <!-- <ElDialog v-model="dialogFormVisible" title="新增會員" width="500">
+      <ElDialog v-model="dialogFormVisible" title="新增會員" width="500">
 
-        <el-form :model="insertMemberFormData" ref="form" :rules="insertOrganDonationConsentRules">
+        <el-form :model="insertMemberFormData" ref="form" :rules="insertMemberRules">
 
           <el-form-item label="Email" :label-width="formLabelWidth" prop="email">
             <el-input v-model="insertMemberFormData.email" autocomplete="off" />
@@ -125,6 +83,7 @@
             <el-input v-model="insertMemberFormData.phone" autocomplete="off" />
           </el-form-item>
 
+
         </el-form>
 
         <template #footer>
@@ -135,76 +94,37 @@
             </ElButton>
           </div>
         </template>
-      </ElDialog> -->
+      </ElDialog>
 
 
 
       <!-- 修改時的Drawer -->
+      <!-- 新增/修改時的drawer -->
       <el-drawer v-model="drawer" title="I am the title">
 
         <template #header>
-          <h4>資料修改</h4>
+          <h4>會員資料修改</h4>
         </template>
+
 
         <template #default>
           <el-form label-position="top" label-width="auto" :model="updateMemberForm" :rules="updateMemberFormRules"
             ref="updateMemberFormRef">
-
+            <el-form-item label="E-mail" prop="email">
+              <el-input v-model="updateMemberForm.email" />
+            </el-form-item>
             <el-form-item label="姓名" prop="name">
               <el-input v-model="updateMemberForm.name" />
             </el-form-item>
-
-            <el-form-item label="身份證字號" prop="idCard">
-              <el-input v-model="updateMemberForm.idCard" />
+            <el-form-item label="院所" prop="department">
+              <el-input v-model="updateMemberForm.department" />
             </el-form-item>
-
-            <el-form-item label="出生日期" prop="birthday">
-              <el-date-picker v-model="updateMemberForm.birthday" type="date"
-                value-format="YYYY-MM-DD"></el-date-picker>
+            <el-form-item label="職稱" prop="jobTitle">
+              <el-input v-model="updateMemberForm.jobTitle" />
             </el-form-item>
-
-            <el-form-item label="性別" prop="gender">
-              <el-radio-group v-model="updateMemberForm.gender">
-                <el-radio value="男">男</el-radio>
-                <el-radio value="女">女</el-radio>
-                <el-radio value="其他">其他 :</el-radio>
-              </el-radio-group>
-              <el-input class="gender-other" v-if="updateMemberForm.gender === '其他'"
-                v-model="updateMemberForm.genderOther">
-              </el-input>
-            </el-form-item>
-
-            <el-form-item label="連絡電話" prop="phone">
+            <el-form-item label="聯絡電話" prop="phone">
               <el-input v-model="updateMemberForm.phone" />
             </el-form-item>
-
-            <el-form-item label="地址" prop="contactAddress">
-              <el-input v-model="updateMemberForm.contactAddress" />
-            </el-form-item>
-
-            <el-form-item label="E-Mail" prop="email">
-              <el-input v-model="updateMemberForm.email" />
-            </el-form-item>
-
-            <el-form-item label="審核狀態" prop="status">
-              <el-select v-model="updateMemberForm.status" placeholder="Select" style="width: 240px;">
-                <el-option label="未審核" value="0">
-                  <span>未審核</span>
-                </el-option>
-                <el-option label="審核通過" value="1">
-                  <span style="color:green;">審核通過</span>
-                </el-option>
-                <el-option label="駁回申請" value="2">
-                  <span style="color:red;">駁回申請</span>
-                </el-option>
-
-                <template #label="{ label, value }">
-                  <span :style="{ color: value == '1' ? 'green' : value == '-1' ? 'red' : 'black' }">{{ label }}</span>
-                </template>
-              </el-select>
-
-            </el-form-item>
-
           </el-form>
         </template>
 
@@ -216,7 +136,12 @@
           </div>
         </template>
 
+
       </el-drawer>
+
+
+
+
     </el-card>
 
   </section>
@@ -228,20 +153,7 @@
 import { ref, reactive } from 'vue'
 import { Delete, Plus } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
-import { getMemberApi, getAllMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, getMemberCountApi, getMemberCountByStatusApi, updateMemberApi, deleteMemberApi, batchDeleteMemberApi, downloadMemberExcelApi } from '@/api/member'
-
-
-const downloadExcel = async () => {
-  let res = await downloadMemberExcelApi()
-  console.log(res)
-  const url = window.URL.createObjectURL(new Blob([res.data]));
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', '會員列表.xlsx');
-  document.body.appendChild(link);
-  link.click();
-}
+import { getMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, addMemberApi, updateMemberApi, deleteMemberApi, batchDeleteMemberApi } from '@/api/member'
 
 //獲取路由
 const route = useRoute()
@@ -250,64 +162,27 @@ const router = useRouter()
 //formLabel 寬度
 const formLabelWidth = '140px'
 
-//查詢內容
-let input = ref('')
-
-//篩選審核狀態,預設找已經過審的
-let filterStatus = ref('')
-
-//獲取同意書總數
-let memberCount = ref(0)
-
-
 
 /**--------------顯示數據相關---------------------------- */
-
-
-const getMemberCount = async () => {
-  let res = await getMemberCountApi()
-  memberCount.value = res.data
-}
-
-
-//獲取會員List
-
+//最新消息List
 let memberList = reactive<Record<string, any>>({
-  records: [{
-    name: '',
-    email: '',
-    phone: '',
-    department: '',
-    contactAddress: '',
-    jobTitle: '',
-    gender: '',
-    genderOther: '',
-    idCard: '',
-    birthday: '',
-  }]
 })
 
 //設定分頁組件,currentPage當前頁數
 let currentPage = ref(1)
 
 
-
-const getMemberByPagination = async (page: number, size: number) => {
-  let res = await getMemberByPaginationByStatusApi(page, size, filterStatus.value, input.value)
+const getMember = async (page: number, size: number) => {
+  let res = await getMemberByPaginationByStatusApi(page, size, "1")
   Object.assign(memberList, res.data)
 }
 
 
 //監聽當前頁數的變化,如果有更動就call API 獲取數組數據
 watch(currentPage, (value, oldValue) => {
-  getMemberByPagination(value, 10)
+  getMember(value, 10)
 })
 
-
-watch(filterStatus, (value, oldValue) => {
-  console.log('filterStatus', value)
-  getMemberByPagination(currentPage.value, 10)
-})
 
 /** --------- 刪除相關variable及function -------------- */
 
@@ -321,16 +196,16 @@ const handleSelectionChange = (val: any) => {
   Object.assign(deleteSelectList, val)
 }
 
-//刪除同意書
+//刪除最新消息
 const deleteRow = (id: number): void => {
-  ElMessageBox.confirm(`確定要刪除此資料嗎？`, '確認刪除', {
+  ElMessageBox.confirm(`確定要刪除此會員嗎？`, '確認刪除', {
     confirmButtonText: '確定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
     // 用户選擇確認，繼續操作
     await deleteMemberApi(id)
-    getMemberByPagination(currentPage.value, 10)
+    getMember(currentPage.value, 10)
 
     ElMessage.success('刪除成功');
   }).catch((err) => {
@@ -338,20 +213,19 @@ const deleteRow = (id: number): void => {
   });
 }
 
-//批量刪除同意書的function
+//批量刪除最新消息的function
 const deleteList = () => {
   if (deleteSelectList.length >= 1) {
-    ElMessageBox.confirm(`確定要刪除這${deleteSelectList.length}個同意書嗎？`, '確認刪除', {
+    ElMessageBox.confirm(`確定要刪除這${deleteSelectList.length}個消息嗎？`, '確認刪除', {
       confirmButtonText: '確定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(async () => {
       //確定刪除後使用父組件傳來的function
       //提取idList
-      console.log(deleteSelectList)
       let deleteIdList = deleteSelectList.map((item: { memberId: string }) => item.memberId)
       await batchDeleteMemberApi(deleteIdList)
-      getMemberByPagination(currentPage.value, 10)
+      getMember(currentPage.value, 10)
       ElMessage.success('刪除成功');
     }).catch((err) => {
       console.log(err)
@@ -381,7 +255,7 @@ const insertMemberFormData = reactive({
 })
 
 //表單校驗規則
-const insertOrganDonationConsentRules = reactive<FormRules>({
+const insertMemberRules = reactive<FormRules>({
   email: [
     {
       required: true,
@@ -445,9 +319,9 @@ const submitInsertForm = (form: FormInstance | undefined) => {
     if (valid) {
       try {
         //呼叫父組件給的新增function API
-        // await addMemberApi(insertMemberFormData)
+        await addMemberApi(insertMemberFormData)
         ElMessage.success('新增成功');
-        getMemberByPagination(currentPage.value, 10)
+        getMember(currentPage.value, 10)
 
       } catch (err: any) {
         console.log(err)
@@ -473,114 +347,20 @@ const cancelClick = () => {
 }
 
 //編輯的表單元素本身
-
 const updateMemberFormRef = ref()
 
+//編輯的表單內容
 let updateMemberForm = reactive({
-  "name": "",
-  "email": "",
-  "phone": "",
-  "department": "",
-  "contactAddress": "",
-  "jobTitle": "",
-  "gender": "",
-  "genderOther": "",
-  "idCard": "",
-  "birthday": "",
-  "status": "",
-})
+  email: '',
+  name: '',
+  department: '',
+  jobTitle: '',
+  phone: '',
 
-// //編輯的表單內容
-// let updateOrganDonationConsentForm = reactive({
-//   "name": "",
-//   "idCard": "",
-//   "birthday": "",
-//   "gender": "",
-//   "contactNumber": "",
-//   "phoneNumber": "",
-//   "email": "",
-//   "address": "",
-//   "legalRepresentativeName": "",
-//   "legalRepresentativeIdCard": "",
-//   "consentCard": "",
-//   "consentCardNumber": "",
-//   "reason": "",
-//   "wordToFamily": "",
-//   "donateOrgans": [] as string[],
-//   "remark": "",
-//   "healthInsuranceCardAnnotation": "",
-//   "healthInsuranceCardAnnotationDate": "",
-//   "signatureDate": "",
-//   "status": "",
-// })
+})
 
 //編輯表單的校驗規則
 const updateMemberFormRules = reactive<FormRules>({
-  name: [
-    {
-      required: true,
-      message: '姓名不能為空',
-      trigger: 'change',
-    },
-  ],
-  idCard: [
-    {
-      required: true,
-      message: '身份證字號不能為空',
-      trigger: 'change',
-    },
-  ],
-  birthday: [
-    {
-      required: true,
-      message: '生日不能為空',
-      trigger: 'change',
-    },
-    {
-      type: "date",
-      message: '必須為日期',
-      trigger: 'change',
-    },
-    {
-      validator: (rule, value, callback) => {
-        const age = new Date().getFullYear() - new Date(value).getFullYear();
-        if (age < 18) {
-          callback(new Error('年齡不能低於18歲'));
-        } else {
-          callback();
-        }
-      },
-      trigger: 'change',
-    }
-
-  ],
-  gender: [
-    { required: true, message: '請選擇生理性別', trigger: 'change' },
-    {
-      validator: (rule, value, callback) => {
-        if (value === '其他' && !updateMemberForm.genderOther) {
-          callback(new Error('請填寫其他性別說明'));
-        } else {
-          callback();
-        }
-      },
-      trigger: 'change',
-    },
-  ],
-  phone: [
-    {
-      required: true,
-      message: '手機號碼不能為空',
-      trigger: 'change',
-    }
-  ],
-  contactAddress: [
-    {
-      required: true,
-      message: '地址不能為空',
-      trigger: 'change',
-    }
-  ],
   email: [
     {
       required: true,
@@ -590,13 +370,34 @@ const updateMemberFormRules = reactive<FormRules>({
     {
       type: 'email',
       message: '請輸入正確的E-mail格式',
-      trigger: 'change',
+      trigger: 'change'
     },
   ],
-  status: [
+  name: [
     {
       required: true,
-      message: '請選擇審核狀態',
+      message: '姓名不能為空',
+      trigger: 'change',
+    }
+  ],
+  department: [
+    {
+      required: true,
+      message: '院所不能為空',
+      trigger: 'change',
+    }
+  ],
+  jobTitle: [
+    {
+      required: true,
+      message: '職稱不能為空',
+      trigger: 'change',
+    }
+  ],
+  phone: [
+    {
+      required: true,
+      message: '電話不能為空',
       trigger: 'change',
     },
   ],
@@ -608,12 +409,11 @@ const confirmClick = async () => {
   //沒有抓到的這個Dom直接返回
   updateMemberFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      console.log(updateMemberForm)
+
       await updateMemberApi(updateMemberForm)
       drawer.value = false
       ElMessage.success("修改完成")
-      await getMemberByPagination(currentPage.value, 10)
-
+      await getMember(currentPage.value, 10)
 
     } else {
       ElMessage.error("請完整填入資訊")
@@ -622,9 +422,9 @@ const confirmClick = async () => {
 
 }
 
+//編輯會員資料按鈕
 const editRow = (member: any): void => {
   Object.assign(updateMemberForm, member)
-  console.log(updateMemberForm)
   drawer.value = true
 }
 
@@ -632,8 +432,7 @@ const editRow = (member: any): void => {
 /**-------------------掛載頁面時執行-------------------- */
 
 onMounted(() => {
-  getMemberByPagination(1, 10)
-  getMemberCount()
+  getMember(1, 10)
 })
 
 
@@ -662,21 +461,9 @@ onMounted(() => {
 
 
 .function-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: right;
   margin-bottom: 1%;
-
-  .total-count {
-    font-weight: 600;
-  }
-
 }
-
-.filter-status {
-  margin-left: 10px;
-}
-
 
 .member-table {
   width: 100%;
@@ -687,11 +474,6 @@ onMounted(() => {
 .member-pagination {
   margin-top: 1%;
   margin-bottom: 1%;
-}
-
-.gender-other {
-  width: 100px;
-  margin-left: 1rem;
 }
 
 /**
