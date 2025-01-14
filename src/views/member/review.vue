@@ -1,13 +1,13 @@
 <!--  -->
 <template>
-  <section class="organ-donation-consent-section">
-    <el-card class="organ-donation-consent-card">
+  <section class="member-section">
+    <el-card class="member-card">
       <h1>同意書申請審核</h1>
 
       <!-- 如果要用兩種註冊方式再考慮使用這個 -->
       <div class="function-bar">
         <div class="display-count">
-          未審核篇數為： {{ organDonationConsentCount }} 篇
+          未審核人數為： {{ memberCount }} 人
         </div>
         <div class="btn-box">
           <el-button type="primary" @click="approvalList" :disabled="selectList.length > 0 ? false : true">
@@ -17,7 +17,7 @@
           </el-button>
 
           <el-button type="danger" @click="failedList" :disabled="selectList.length > 0 ? false : true">
-            批量廢除<el-icon class="el-icon--right">
+            批量駁回<el-icon class="el-icon--right">
               <Delete />
             </el-icon>
           </el-button>
@@ -26,18 +26,21 @@
 
       <div class="search-bar">
         <el-input v-model="input" style="width: 240px" placeholder="輸入內容,Enter查詢"
-          @keydown.enter="getOrganDonationConsent(currentPage, 10)" />
+          @keydown.enter="getMember(currentPage, 10)" />
       </div>
 
-      <el-table class="news-table" :data="organDonationConsentList.records" @selection-change="handleSelectionChange">
+      <el-table class="news-table" :data="memberList.records" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column fixed prop="name" label="簽署人" width="90" />
-        <el-table-column prop="phoneNumber" label="手機" width="120" />
+        <el-table-column label="性別" width="90">
+          <template #default="scope">
+            <el-text v-if="scope.row.genderOther">{{ scope.row.genderOther }}</el-text>
+            <el-text v-else>{{ scope.row.gender }}</el-text>
+          </template>
+        </el-table-column>
+        <el-table-column prop="phone" label="手機" width="120" />
         <el-table-column prop="birthday" label="生日" width="120" />
         <el-table-column prop="idCard" label="身份證字號" width="110" />
-        <el-table-column prop="legalRepresentativeName" label="法定代理人" width="100" />
-        <el-table-column prop="legalRepresentativeIdCard" label="法定代理人身份證字號" min-width="90" />
-        <el-table-column prop="signatureDate" label="簽署日期" width="120" />
 
         <el-table-column fixed="right" label="操作" width="150">
           <!-- 透過#default="scope" , 獲取到當前的對象值 , scope.row則是拿到當前那個row的數據  -->
@@ -57,9 +60,8 @@
       current-page當前頁數,官方建議使用v-model與current-page去與自己設定的變量做綁定,
     -->
       <div class="example-pagination-block news-pagination">
-        <el-pagination layout="prev, pager, next" :page-count="Number(organDonationConsentList.pages)"
-          :default-page-size="Number(organDonationConsentList.size)" v-model:current-page="currentPage"
-          :hide-on-single-page="true" />
+        <el-pagination layout="prev, pager, next" :page-count="Number(memberList.pages)"
+          :default-page-size="Number(memberList.size)" v-model:current-page="currentPage" :hide-on-single-page="true" />
       </div>
 
 
@@ -72,7 +74,8 @@
 import { ref, reactive } from 'vue'
 import { Delete, Plus } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { getOrganDonationConsentCountByStatusApi, getOrganDonationConsentByPaginationByStatusApi, updateOrganDonationConsentApi, batchUpdateOrganDonationConsentApi } from '@/api/organDonationConsent'
+// import { getOrganDonationConsentCountByStatusApi, getOrganDonationConsentByPaginationByStatusApi, updateOrganDonationConsentApi, batchUpdateOrganDonationConsentApi } from '@/api/organDonationConsent'
+import { getMemberApi, getAllMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, getMemberCountApi, getMemberCountByStatusApi, updateMemberApi, batchUpdateMemberApi, deleteMemberApi, batchDeleteMemberApi, downloadMemberExcelApi } from '@/api/member'
 
 
 //獲取路由
@@ -89,40 +92,42 @@ const formLabelWidth = '140px'
 let currentPage = ref(1)
 
 //獲取未審核的同意書
-let organDonationConsentCount = ref(0)
+let memberCount = ref(0)
 
 //查詢內容
 let input = ref('')
 
 
 //獲取未審核的同意書List
-let organDonationConsentList = reactive<Record<string, any>>({
+let memberList = reactive<Record<string, any>>({
   records: [{
     name: '',
-    phoneNumber: '',
-    birthday: '',
+    email: '',
+    phone: '',
+    department: '',
+    contactAddress: '',
+    jobTitle: '',
+    gender: '',
+    genderOther: '',
     idCard: '',
-    legalRepresentativeName: '',
-    legalRepresentativeIdCard: '',
-    signatureDate: ''
-
+    birthday: '',
   }]
 })
 
-const getOrganDonationConsent = async (page: number, size: number) => {
-  let res = await getOrganDonationConsentByPaginationByStatusApi(page, size, "0", input.value)
-  Object.assign(organDonationConsentList, res.data)
+const getMember = async (page: number, size: number) => {
+  let res = await getMemberByPaginationByStatusApi(page, size, "0", input.value)
+  Object.assign(memberList, res.data)
 }
 
-const getOrganDonationConsentCount = async () => {
-  let res = await getOrganDonationConsentCountByStatusApi("0")
-  organDonationConsentCount.value = res.data
+const getMemberCount = async () => {
+  let res = await getMemberCountByStatusApi("0")
+  memberCount.value = res.data
 }
 
 
 //監聽當前頁數的變化,如果有更動就call API 獲取數組數據
 watch(currentPage, (value, oldValue) => {
-  getOrganDonationConsent(value, 10)
+  getMember(value, 10)
 })
 
 /** --------- 審核通過/駁回 相關variable及function -------------- */
@@ -138,23 +143,22 @@ const handleSelectionChange = (val: any) => {
 }
 
 //駁回同意書申請
-const failedRow = (organDonationConsent: any): void => {
-  ElMessageBox.confirm(`確定要廢除此簽署申請嗎？`, '確認廢除', {
+const failedRow = (member: any): void => {
+  ElMessageBox.confirm(`確定要駁回此申請嗎？`, '確認廢除', {
     confirmButtonText: '確定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
 
-    Object.assign(updateOrganDonationConsent, organDonationConsent)
+    Object.assign(updateMember, member)
     //將審核狀態更改為駁回
-    updateOrganDonationConsent.status = "-1"
-    updateOrganDonationConsent.donateOrgans = updateOrganDonationConsent.donateOrgans.split(",")
+    updateMember.status = "2"
 
     // 用户選擇確認，繼續操作
-    await updateOrganDonationConsentApi(updateOrganDonationConsent)
+    await updateMemberApi(updateMember)
     ElMessage.success('廢除成功');
 
-    getOrganDonationConsent(1, 10)
+    getMember(1, 10)
 
   }).catch((err) => {
     console.log(err)
@@ -164,7 +168,7 @@ const failedRow = (organDonationConsent: any): void => {
 //批量駁回同意書申請的function
 const failedList = () => {
   if (selectList.length >= 1) {
-    ElMessageBox.confirm(`確定要廢除${selectList.length}個簽署申請嗎？`, '確認廢除', {
+    ElMessageBox.confirm(`確定要駁回${selectList.length}個申請嗎？`, '確認駁回', {
       confirmButtonText: '確定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -174,16 +178,16 @@ const failedList = () => {
       let transData = selectList.map(item => {
         return {
           ...(item),
-          status: "-1",
-          donateOrgans: item.donateOrgans ? item.donateOrgans.split(",") : [] // 確保 donateOrgans 存在
+          status: "2",
+          // donateOrgans: item.donateOrgans ? item.donateOrgans.split(",") : [] // 確保 donateOrgans 存在
         };
       })
 
-      await batchUpdateOrganDonationConsentApi(transData)
+      await batchUpdateMemberApi(transData)
       ElMessage.success("批量審核駁回")
 
 
-      getOrganDonationConsent(1, 10)
+      getMember(1, 10)
 
     }).catch((err) => {
       console.log(err)
@@ -197,22 +201,21 @@ const failedList = () => {
 
 /**------------編輯內容相關操作---------------------- */
 
-let updateOrganDonationConsent = reactive<Record<string, any>>({
+let updateMember = reactive<Record<string, any>>({
 
 })
 
 //會員審核通過
-const approvalRow = async (organDonationConsent: any) => {
+const approvalRow = async (member: any) => {
 
-  Object.assign(updateOrganDonationConsent, organDonationConsent)
+  Object.assign(updateMember, member)
   //將審核狀態更改為通過
-  updateOrganDonationConsent.status = "1"
-  updateOrganDonationConsent.donateOrgans = updateOrganDonationConsent.donateOrgans.split(",")
+  updateMember.status = "1"
 
   try {
-    await updateOrganDonationConsentApi(updateOrganDonationConsent)
+    await updateMemberApi(updateMember)
     ElMessage.success("審核通過")
-    getOrganDonationConsent(currentPage.value, 10)
+    getMember(currentPage.value, 10)
 
   } catch (err) {
     console.log(err)
@@ -227,14 +230,13 @@ const approvalList = async () => {
       return {
         ...(item),
         status: "1",
-        donateOrgans: item.donateOrgans ? item.donateOrgans.split(",") : [] // 確保 donateOrgans 存在
       };
     })
 
     try {
-      await batchUpdateOrganDonationConsentApi(transData)
+      await batchUpdateMemberApi(transData)
       ElMessage.success("批量審核通過")
-      getOrganDonationConsent(currentPage.value, 10)
+      getMember(currentPage.value, 10)
 
     } catch (err) {
       console.log(err)
@@ -248,8 +250,8 @@ const approvalList = async () => {
 /**-------------------掛載頁面時執行-------------------- */
 
 onMounted(() => {
-  getOrganDonationConsentCount()
-  getOrganDonationConsent(1, 10)
+  getMemberCount()
+  getMember(1, 10)
 })
 
 
@@ -258,11 +260,11 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.organ-donation-consent-section {
+.member-section {
   width: 95%;
   margin: 0 auto;
 
-  .organ-donation-consent-card {
+  .member-card {
     margin-top: 2%;
     margin-bottom: 2%;
   }

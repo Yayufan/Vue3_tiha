@@ -292,7 +292,6 @@ let currentPage = ref(1)
 
 
 const getMemberByPagination = async (page: number, size: number) => {
-  console.log("input", input.value)
   let res = await getMemberByPaginationByStatusApi(page, size, filterStatus.value, input.value)
   Object.assign(memberList, res.data)
 }
