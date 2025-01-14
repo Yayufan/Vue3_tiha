@@ -31,7 +31,7 @@
     </el-card>
 
     <!-- 數据卡片- 總瀏覽人次及會員人數 -->
-    <el-row :gutter="20" class="mt-3">
+    <!-- <el-row :gutter="20" class="mt-3">
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card shadow="never">
           <div>文章總瀏覽人次： </div>
@@ -60,10 +60,10 @@
         </el-card>
       </el-col>
 
-    </el-row>
+    </el-row> -->
 
     <!-- 數据卡片- 最新消息及文章篇數 -->
-    <el-row :gutter="20" class="mt-3">
+    <!-- <el-row :gutter="20" class="mt-3">
       <el-col :xs="24" :sm="12" :lg="6">
         <el-card shadow="never">
           <div>最新消息： </div>
@@ -147,7 +147,7 @@
         </el-card>
       </el-col>
 
-    </el-row>
+    </el-row> -->
 
 
     <!-- Echarts 图表 -->

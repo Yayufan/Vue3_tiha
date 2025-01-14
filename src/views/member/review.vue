@@ -2,7 +2,7 @@
 <template>
   <section class="member-section">
     <el-card class="member-card">
-      <h1>同意書申請審核</h1>
+      <h1>會員申請審核</h1>
 
       <!-- 如果要用兩種註冊方式再考慮使用這個 -->
       <div class="function-bar">
@@ -41,6 +41,7 @@
         <el-table-column prop="phone" label="手機" width="120" />
         <el-table-column prop="birthday" label="生日" width="120" />
         <el-table-column prop="idCard" label="身份證字號" width="110" />
+        <!-- <el-table-column prop="email" label="信箱" width="220" /> -->
 
         <el-table-column fixed="right" label="操作" width="150">
           <!-- 透過#default="scope" , 獲取到當前的對象值 , scope.row則是拿到當前那個row的數據  -->

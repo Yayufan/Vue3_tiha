@@ -61,6 +61,7 @@
         <el-table-column prop="phone" label="手機" width="120" />
         <el-table-column prop="birthday" label="生日" width="120" />
         <el-table-column prop="idCard" label="身份證字號" width="110" />
+        <el-table-column prop="email" label="信箱" width="150" />
         <el-table-column prop="status" label="審核狀態" min-width="120">
           <template #default="scope">
             <span v-if="scope.row.status == '1'" style="color: green;">審核通過</span>
@@ -164,7 +165,7 @@
 
             <el-form-item label="性別" prop="gender">
               <el-radio-group v-model="updateMemberForm.gender">
-                <el-radio value=" 男">男</el-radio>
+                <el-radio value="男">男</el-radio>
                 <el-radio value="女">女</el-radio>
                 <el-radio value="其他">其他 :</el-radio>
               </el-radio-group>
@@ -446,7 +447,7 @@ const submitInsertForm = (form: FormInstance | undefined) => {
         //呼叫父組件給的新增function API
         // await addMemberApi(insertMemberFormData)
         ElMessage.success('新增成功');
-        getOrganDonationConsent(currentPage.value, 10)
+        getMemberByPagination(currentPage.value, 10)
 
       } catch (err: any) {
         console.log(err)
@@ -486,6 +487,7 @@ let updateMemberForm = reactive({
   "genderOther": "",
   "idCard": "",
   "birthday": "",
+  "status": "",
 })
 
 // //編輯的表單內容
