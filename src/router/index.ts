@@ -1,4 +1,9 @@
-import { createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+  RouteRecordRaw,
+} from "vue-router";
 
 export const Layout = () => import("@/layout/index.vue");
 
@@ -55,8 +60,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import("@/views/error-page/404.vue"),
         meta: { hidden: true },
       },
-
-
     ],
   },
   //系統設定，沒子目錄，器捐協會沒有設定
@@ -92,12 +95,12 @@ export const constantRoutes: RouteRecordRaw[] = [
 
   //這個預計當作器捐線上簽屬的審核
   {
-    path: "/organ-donation-consent",
+    path: "/member",
     component: Layout,
-    name: "organDonationConsent", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+    name: "member", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
     // https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
     meta: {
-      title: "器捐同意書",
+      title: "會員管理",
       icon: "el-icon-Avatar",
       //affix: true,
       keepAlive: true,
@@ -106,33 +109,30 @@ export const constantRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: "",
-        component: () => import("@/views/organDonationConsent/index.vue"),
-        name: "organDonationConsentPage",
+        component: () => import("@/views/member/index.vue"),
+        name: "memberPage",
         meta: {
-          title: "同意書列表",
+          title: "會員列表",
           icon: "el-icon-Avatar",
           hidden: false,
           roles: ["ADMIN"],
           keepAlive: true,
-
-        }
+        },
       },
       {
         path: "review",
-        component: () => import("@/views/organDonationConsent/review.vue"),
-        name: "organDonationConsentReview",
+        component: () => import("@/views/member/review.vue"),
+        name: "memberReview",
         meta: {
-          title: "同意書審核",
+          title: "會員審核",
           icon: "el-icon-Finished",
           hidden: false,
           roles: ["ADMIN"],
           keepAlive: true,
-        }
-      }
-    ]
-
+        },
+      },
+    ],
   },
-
 
   //器捐協會沒有類別管理
   // {
@@ -230,7 +230,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "event-highlights/:id",
-        component: () => import("@/views/content/eventHighlights/EventHighlightsItem.vue"),
+        component: () =>
+          import("@/views/content/eventHighlights/EventHighlightsItem.vue"),
         name: "NewsContentEventHighlightsItem",
         props: true,
         meta: {
@@ -241,8 +242,6 @@ export const constantRoutes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
-
-
 
       /**門診圖片更換路由 */
       // {
@@ -257,9 +256,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       //     keepAlive: true,
       //   },
       // },
-    ]
-
-
+    ],
   },
 
   {
@@ -289,7 +286,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "organ-donation/:id",
-        component: () => import("@/views/content/organDonation/OrganDonationItem.vue"),
+        component: () =>
+          import("@/views/content/organDonation/OrganDonationItem.vue"),
         name: "OrganContentOrganDonationItem",
         props: true,
         meta: {
@@ -316,7 +314,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "story-donor-family/:id",
-        component: () => import("@/views/content/storyDonorFamily/StoryDonorFamilyItem.vue"),
+        component: () =>
+          import("@/views/content/storyDonorFamily/StoryDonorFamilyItem.vue"),
         name: "OrganContentStoryDonorFamilyItem",
         props: true,
         meta: {
@@ -342,7 +341,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "story-recipient/:id",
-        component: () => import("@/views/content/storyRecipient/StoryRecipientItem.vue"),
+        component: () =>
+          import("@/views/content/storyRecipient/StoryRecipientItem.vue"),
         name: "OrganContentStoryRecipientItem",
         props: true,
         meta: {
@@ -394,7 +394,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "doctor-voice/:id",
-        component: () => import("@/views/content/doctorVoice/DoctorVoiceItem.vue"),
+        component: () =>
+          import("@/views/content/doctorVoice/DoctorVoiceItem.vue"),
         name: "OrganContentDoctorVoiceItem",
         props: true,
         meta: {
@@ -405,9 +406,7 @@ export const constantRoutes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
-
-    ]
-
+    ],
   },
 
   //--------------------------
@@ -427,7 +426,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       /**歷年成果(簽卡分析) 路由 */
       {
         path: "assistance-resources",
-        component: () => import("@/views/content/assistanceResources/index.vue"),
+        component: () =>
+          import("@/views/content/assistanceResources/index.vue"),
         name: "FamilySupportContentAssistanceResources",
         meta: {
           title: "協助資源",
@@ -440,7 +440,10 @@ export const constantRoutes: RouteRecordRaw[] = [
       /**器捐會刊路由 */
       {
         path: "assistance-resources/:id",
-        component: () => import("@/views/content/assistanceResources/AssistanceResourcesItem.vue"),
+        component: () =>
+          import(
+            "@/views/content/assistanceResources/AssistanceResourcesItem.vue"
+          ),
         name: "FamilySupportContentAssistanceResourcesItem",
         props: true,
         meta: {
@@ -454,7 +457,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       /**好書推薦路由,以及其編輯路由 */
       {
         path: "book-recommendations",
-        component: () => import("@/views/content/bookRecommendations/index.vue"),
+        component: () =>
+          import("@/views/content/bookRecommendations/index.vue"),
         name: "FamilySupportContentBookRecommendations",
         meta: {
           title: "好書推薦",
@@ -466,7 +470,10 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "book-recommendations/:id",
-        component: () => import("@/views/content/bookRecommendations/BookRecommendationsItem.vue"),
+        component: () =>
+          import(
+            "@/views/content/bookRecommendations/BookRecommendationsItem.vue"
+          ),
         name: "FamilySupportContentBookRecommendationsItem",
         props: true,
         meta: {
@@ -492,7 +499,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "social-work-column/:id",
-        component: () => import("@/views/content/socialWorkColumn/socialWorkColumnItem.vue"),
+        component: () =>
+          import("@/views/content/socialWorkColumn/socialWorkColumnItem.vue"),
         name: "FamilySupportContentSocialWorkColumnItem",
         props: true,
         meta: {
@@ -503,11 +511,8 @@ export const constantRoutes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
-
-    ]
+    ],
   },
-
-
 
   //---------------------------
   {
@@ -548,10 +553,8 @@ export const constantRoutes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
-
-    ]
+    ],
   },
-
 
   /**測試文章 */
   // {
@@ -714,11 +717,10 @@ export const constantRoutes: RouteRecordRaw[] = [
   //   ]
   // },
 
-
   //系統權限路由
   /**
    * 這邊要注意最少需要填寫兩個子路由他才會,變成一個嵌套的navbar選項
-   * 
+   *
    * path:路由路徑
    * component:一級菜單預設component都是Layout,因為一級菜單幾乎不直接顯示
    * redirect:重定向,從對應的一級路由中,挑一個預設的二級路由,來做為預設的顯示
@@ -729,10 +731,8 @@ export const constantRoutes: RouteRecordRaw[] = [
    *        3.hidden:是否隱藏
    *        4.roles:允許進入的角色
    *        5.keepAlive:是否成為緩存路由,這邊要注意,緩存的是數據,不是在navbar上的顯示
-   * 
+   *
    */
-
-
 
   /*
 
@@ -955,7 +955,7 @@ const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
 });
 
-console.log(import.meta.env.BASE_URL)
+console.log(import.meta.env.BASE_URL);
 
 /**
  * 重置路由

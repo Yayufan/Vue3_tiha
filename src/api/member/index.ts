@@ -3,8 +3,8 @@ import { AxiosPromise } from "axios";
 
 /**
  * 獲取單一會員
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
 export function getMemberApi(id: number): AxiosPromise {
   return request({
@@ -15,7 +15,7 @@ export function getMemberApi(id: number): AxiosPromise {
 
 /**
  * 獲取全部會員
- * @returns 
+ * @returns
  */
 export function getAllMemberApi(): AxiosPromise {
   return request({
@@ -24,47 +24,55 @@ export function getAllMemberApi(): AxiosPromise {
   });
 }
 
-
 /**
  * 獲取會員(分頁)
- * @param page 
- * @param size 
- * @returns 
+ * @param page
+ * @param size
+ * @returns
  */
-export function getMemberByPaginationApi(page: number, size: number): AxiosPromise {
+export function getMemberByPaginationApi(
+  page: number,
+  size: number
+): AxiosPromise {
   return request({
     url: "/member/pagination",
     method: "get",
     params: {
       page,
-      size
-    }
+      size,
+    },
   });
 }
 
 /**
  * 根據狀態，獲取符合的會員(分頁)
- * @param page 
- * @param size 
+ * @param page
+ * @param size
  * @param status
- * @returns 
+ * @returns
  */
-export function getMemberByPaginationByStatusApi(page: number, size: number, status: string): AxiosPromise {
+export function getMemberByPaginationByStatusApi(
+  page: number,
+  size: number,
+  status: string,
+  queryText?: string
+): AxiosPromise {
   return request({
     url: "/member/pagination-by-status",
     method: "get",
     params: {
       page,
       size,
-      status
-    }
+      status,
+      queryText,
+    },
   });
 }
 
 /**
  * 獲取會員總數
- * 
- * @returns 
+ *
+ * @returns
  */
 export function getMemberCountApi(): AxiosPromise {
   return request({
@@ -75,65 +83,63 @@ export function getMemberCountApi(): AxiosPromise {
 
 /**
  * 根據審核狀態,獲取相符會員的總數
- * 
- * @param status 
- * @returns 
+ *
+ * @param status
+ * @returns
  */
 export function getMemberCountByStatusApi(status: string): AxiosPromise {
   return request({
     url: "/member/count-by-status",
     method: "get",
     params: {
-      status
-    }
+      status,
+    },
   });
 }
 
-
 /**
  * 新增會員
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export function addMemberApi(data: any): AxiosPromise {
   return request({
     url: "/member",
     method: "post",
-    data
+    data,
   });
 }
 
 /**
  * 更新會員
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export function updateMemberApi(data: any): AxiosPromise {
   return request({
     url: "/member",
     method: "put",
-    data
+    data,
   });
 }
 
 /**
  * 批量更新會員
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export function batchUpdateMemberApi(data: any): AxiosPromise {
   return request({
     url: "/member/batch",
     method: "put",
-    data
+    data,
   });
 }
 
-
 /**
  * 刪除單一會員
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
 export function deleteMemberApi(id: number): AxiosPromise {
   return request({
@@ -144,17 +150,25 @@ export function deleteMemberApi(id: number): AxiosPromise {
 
 /**
  * 批量刪除會員
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
 export function batchDeleteMemberApi(data: any): AxiosPromise {
   return request({
     url: `/member`,
     method: "delete",
-    data
+    data,
   });
 }
 
-
-
-
+/**
+ * 下載會員Excel資料
+ * @returns
+ */
+export function downloadMemberExcelApi(): AxiosPromise {
+  return request({
+    url: "/member/download-excel",
+    method: "get",
+    responseType: "arraybuffer",
+  });
+}
