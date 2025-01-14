@@ -57,7 +57,7 @@
 
       <el-table class="member-table" :data="memberList.records" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="name" label="簽署人" width="90" />
+        <el-table-column fixed prop="name" label="姓名" width="90" />
         <el-table-column prop="phone" label="手機" width="120" />
         <el-table-column prop="birthday" label="生日" width="120" />
         <el-table-column prop="idCard" label="身份證字號" width="110" />

@@ -31,7 +31,7 @@
 
       <el-table class="news-table" :data="memberList.records" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="name" label="簽署人" width="90" />
+        <el-table-column fixed prop="name" label="姓名" width="90" />
         <el-table-column label="性別" width="90">
           <template #default="scope">
             <el-text v-if="scope.row.genderOther">{{ scope.row.genderOther }}</el-text>
@@ -40,7 +40,7 @@
         </el-table-column>
         <el-table-column prop="phone" label="手機" width="120" />
         <el-table-column prop="birthday" label="生日" width="120" />
-        <el-table-column prop="idCard" label="身份證字號" width="110" />
+        <el-table-column prop="idCard" label="身份證字號" />
         <!-- <el-table-column prop="email" label="信箱" width="220" /> -->
 
         <el-table-column fixed="right" label="操作" width="150">
