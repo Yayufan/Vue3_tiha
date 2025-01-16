@@ -205,6 +205,17 @@ const tools = {
 
 const editorLoaded = () => {
   console.log("這是emailEditor", emailEditor.value)
+
+  emailEditor.value.editor.loadDesign(oldObject)
+
+  emailEditor.value.editor.setBodyValues({
+    // 背景色改為透明
+    backgroundColor: "TRANSPARENT",
+    //容器寬度改為100%
+    contentWidth: "100%"
+  })
+
+
   // emailEditor.value.editor.registerCallback('image', function (file: any, done: any) {
   //   console.log('file為', file)
   //   console.log('done', done)
@@ -213,9 +224,11 @@ const editorLoaded = () => {
   // })
 
 
+
+
   // Pass your template JSON here
   // this.$refs.emailEditor.editor.loadDesign({});
-  emailEditor.value.editor.loadDesign(oldObject)
+
 }
 
 const saveDesign = () => {
