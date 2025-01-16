@@ -59,9 +59,9 @@
     "sortablejs": "^1.15.2",
     "stompjs": "^2.3.3",
     "vue": "^3.4.21",
+    "vue-email-editor": "^2.1.4",
     "vue-i18n": "9.9.1",
     "vue-router": "^4.3.0",
-    "vue3-roc-date-picker": "^0.1.3",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

@@ -93,7 +93,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   //   ]
   // },
 
-  //這個預計當作器捐線上簽屬的審核
+  //小腸協會,會員的審核及列表
   {
     path: "/member",
     component: Layout,
@@ -126,6 +126,47 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: {
           title: "會員審核",
           icon: "el-icon-Finished",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+    ],
+  },
+
+  //小腸協會,信件的模板及寄信
+  {
+    path: "/mail-center",
+    component: Layout,
+    name: "mailCenter", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+    // https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+    meta: {
+      title: "E-Mail 中心",
+      icon: "el-icon-Message",
+      //affix: true,
+      keepAlive: true,
+      alwaysShow: false,
+    },
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/email-center/index.vue"),
+        name: "emailTemplate",
+        meta: {
+          title: "E-Mail模板",
+          icon: "el-icon-Grid",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      {
+        path: "email-send",
+        component: () => import("@/views/email-center/send.vue"),
+        name: "emailSend",
+        meta: {
+          title: "信件發送",
+          icon: "el-icon-Position",
           hidden: false,
           roles: ["ADMIN"],
           keepAlive: true,

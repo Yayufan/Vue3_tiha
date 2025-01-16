@@ -19,8 +19,7 @@ import "@/styles/index.scss";
 import "uno.css";
 import "animate.css";
 
-import RocDatePicker from "vue3-roc-date-picker";
-import "vue3-roc-date-picker/dist/style.css";
+
 
 const app = createApp(App);
 // 全局注册 自定义指令(directive)
@@ -34,6 +33,5 @@ setupI18n(app);
 // 注册动态路由,每次變更路由都會執行
 setupPermission();
 
-app.use(RocDatePicker);
 //最後才進行掛載
 app.use(router).use(CKEditor).mount("#app");
