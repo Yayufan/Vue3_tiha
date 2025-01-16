@@ -59,8 +59,11 @@
         <el-table-column type="selection" width="55" />
         <el-table-column fixed prop="name" label="姓名" width="90" />
         <el-table-column prop="phone" label="手機" width="120" />
-        <el-table-column prop="birthday" label="生日" width="120" />
-        <el-table-column prop="idCard" label="身份證字號" width="110" />
+        <el-table-column prop="birthday" label="生日" width="120">
+          <template #default="scope">
+            <el-text>{{ formatToMinguo(scope.row.birthday) }}</el-text>
+          </template>
+        </el-table-column> <el-table-column prop="idCard" label="身份證字號" width="110" />
         <el-table-column prop="email" label="信箱" width="150" />
         <el-table-column prop="status" label="審核狀態" min-width="120">
           <template #default="scope">
@@ -159,9 +162,12 @@
             </el-form-item>
 
             <el-form-item label="出生日期" prop="birthday">
-              <el-date-picker v-model="updateMemberForm.birthday" type="date"
-                value-format="YYYY-MM-DD"></el-date-picker>
+              <el-date-picker v-model="updateMemberForm.birthday" type="date" format="YYYY-MM-DD"
+                @change="updateMemberForm.birthday = parseFromMinguo(updateMemberForm.birthday)" locale="zh-TW">
+              </el-date-picker>
             </el-form-item>
+
+            <RocDatePicker v-model="updateMemberForm.birthday" />
 
             <el-form-item label="性別" prop="gender">
               <el-radio-group v-model="updateMemberForm.gender">
@@ -172,6 +178,16 @@
               <el-input class="gender-other" v-if="updateMemberForm.gender === '其他'"
                 v-model="updateMemberForm.genderOther">
               </el-input>
+            </el-form-item>
+
+            <el-form-item label="服務單位" prop="department">
+              <el-input v-model="updateMemberForm.department" placeholder="服務單位">
+
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="職稱" prop="jobTitle">
+              <el-input v-model="updateMemberForm.jobTitle" />
             </el-form-item>
 
             <el-form-item label="連絡電話" prop="phone">
@@ -230,6 +246,8 @@ import { Delete, Plus } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
 import { getMemberApi, getAllMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, getMemberCountApi, getMemberCountByStatusApi, updateMemberApi, deleteMemberApi, batchDeleteMemberApi, downloadMemberExcelApi } from '@/api/member'
+
+
 
 
 const downloadExcel = async () => {
@@ -574,13 +592,6 @@ const updateMemberFormRules = reactive<FormRules>({
       trigger: 'change',
     }
   ],
-  contactAddress: [
-    {
-      required: true,
-      message: '地址不能為空',
-      trigger: 'change',
-    }
-  ],
   email: [
     {
       required: true,
@@ -627,6 +638,19 @@ const editRow = (member: any): void => {
   console.log(updateMemberForm)
   drawer.value = true
 }
+
+const formatToMinguo = (dateString: string): string => {
+  const [year, month, day] = dateString.split('-');
+  const minguoYear = (Number(year) - 1911).toString();
+  console.log(minguoYear)
+  return `${minguoYear}-${month}-${day}`;
+};
+
+const parseFromMinguo = (minguoString: string): string => {
+  const [minguoYear, month, day] = minguoString.split('-');
+  const year = (Number(minguoYear) + 1911).toString();
+  return `${year}-${month}-${day}`;
+};
 
 
 /**-------------------掛載頁面時執行-------------------- */

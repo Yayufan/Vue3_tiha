@@ -39,7 +39,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="phone" label="手機" width="120" />
-        <el-table-column prop="birthday" label="生日" width="120" />
+        <el-table-column prop="birthday" label="生日" width="120">
+          <template #default="scope">
+            <el-text>{{
+              Number(scope.row.birthday.split("-")[0]) - 1911 + "-" + scope.row.birthday.split("-").slice(1).join("-")
+              }}</el-text>
+          </template>
+        </el-table-column>
         <el-table-column prop="idCard" label="身份證字號" />
         <!-- <el-table-column prop="email" label="信箱" width="220" /> -->
 
@@ -247,6 +253,8 @@ const approvalList = async () => {
   }
 
 }
+
+
 
 /**-------------------掛載頁面時執行-------------------- */
 
