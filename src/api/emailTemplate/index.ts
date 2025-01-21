@@ -1,5 +1,6 @@
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
+import { send } from "vite";
 
 /**
  * 獲取單一信件模板
@@ -44,7 +45,6 @@ export function getEmailTemplateByPaginationApi(
   });
 }
 
-
 /**
  * 新增信件模板
  * @param data
@@ -71,7 +71,6 @@ export function updateEmailTemplateApi(data: any): AxiosPromise {
   });
 }
 
-
 /**
  * 刪除單一信件模板
  * @param id
@@ -93,6 +92,14 @@ export function batchDeleteEmailTemplateApi(data: any): AxiosPromise {
   return request({
     url: `/email-template`,
     method: "delete",
+    data,
+  });
+}
+
+export function sendEmailApi(data: any): AxiosPromise {
+  return request({
+    url: `/email-template/send-email-to-all`,
+    method: "post",
     data,
   });
 }
