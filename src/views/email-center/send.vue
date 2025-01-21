@@ -179,7 +179,7 @@ function optimizeForOutlook(html: any): string {
         <table width="600" align="${imageInfoList[imgIndex].position}" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td>
-              <img${attributes} style="display: block; width: 100%; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
+              <img${attributes} style="display: block; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
             </td>
           </tr>
         </table>
