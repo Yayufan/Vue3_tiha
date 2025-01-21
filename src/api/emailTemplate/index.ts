@@ -1,6 +1,5 @@
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
-import { send } from "vite";
 
 /**
  * 獲取單一信件模板

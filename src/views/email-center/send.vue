@@ -205,10 +205,6 @@ const getImageSizeFromDesign = (design: any) => {
           let maxWidth = Math.round(content.values.src.width * widthPercent);
           imageMaxWidthPx.value = `${maxWidth}px`;
           imageMaxWidth.value = maxWidth.toString();
-
-          console.log('imageMaxWidth', imageMaxWidth.value);
-
-          console.log('imageMaxWidthPx', imageMaxWidthPx.value);
         }
       });
     });
@@ -293,9 +289,9 @@ const sendMail = async (sendMailFormRef: FormInstance | undefined) => {
       try {
         //呼叫父組件給的新增function API
         await sendEmailApi(sendMailFormData);
-        // await loading()
+        await loading()
         ElMessage.success('寄送成功');
-        // router.back()
+        router.back()
       } catch (err: any) {
         console.log(err)
       }
