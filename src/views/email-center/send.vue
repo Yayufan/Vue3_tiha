@@ -179,7 +179,7 @@ function optimizeForOutlook(html: any): string {
         <table width="600" align="${imageInfoList[imgIndex].position}" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td>
-              <img${attributes} style="display: block; width: 100%; max-width: ${imageInfoList[imgIndex].maxWidthPercent}; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
+              <img${attributes} style="display: block; width: 100%; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
             </td>
           </tr>
         </table>
@@ -190,7 +190,7 @@ function optimizeForOutlook(html: any): string {
 }
 
 /** 用於儲存各個圖片資訊 */
-const imageInfoList = reactive<Array<{ position: string; maxWidthPercent: string, maxWidthString: string }>>([]);
+const imageInfoList = reactive<Array<{ position: string, maxWidthString: string }>>([]);
 
 const getImageSizeFromDesign = (design: any) => {
   const images: Array<{ src: string; width: number; height: number }> = [];
@@ -209,7 +209,6 @@ const getImageSizeFromDesign = (design: any) => {
           let maxWidth = Math.round(content.values.src.width * widthPercent);
           imageInfoList.push({
             position: content.values.textAlign,
-            maxWidthPercent: content.values.src.maxWidth,
             maxWidthString: maxWidth.toString()
           });
         }
