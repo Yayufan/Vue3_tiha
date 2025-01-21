@@ -41,9 +41,12 @@
         <el-table-column prop="createTime" label="創建時間" width="200" />
         <el-table-column prop="updateTime" label="修改時間" width="200" />
 
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column fixed="right" label="操作" width="150">
           <!-- 透過#default="scope" , 獲取到當前的對象值 , scope.row則是拿到當前那個row的數據  -->
           <template #default="scope">
+            <el-button link type="success" size="small" @click="sendEmail(scope.row)">
+              Send
+            </el-button>
             <el-button link type="primary" size="small" @click="editRow(scope.row)">
               Edit
             </el-button>
@@ -253,6 +256,14 @@ const submitInsertForm = (form: FormInstance | undefined) => {
 const editRow = (row: any): void => {
   console.log(row)
   router.push(`${route.fullPath}/${row.emailTemplateId}`)
+}
+
+
+/**-------------------寄信-------------------- */
+
+const sendEmail = (row: any): void => {
+  console.log(row)
+  router.push(`${route.fullPath}/${'email-send'}/${row.emailTemplateId}`)
 }
 
 /**-------------------掛載頁面時執行-------------------- */

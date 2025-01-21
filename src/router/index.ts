@@ -174,13 +174,14 @@ export const constantRoutes: RouteRecordRaw[] = [
         },
       },
       {
-        path: "email-send",
+        path: "email-send/:id",
         component: () => import("@/views/email-center/send.vue"),
         name: "emailSend",
+        props: true,
         meta: {
           title: "信件發送",
           icon: "el-icon-Position",
-          hidden: false,
+          hidden: true,
           roles: ["ADMIN"],
           keepAlive: true,
         },
