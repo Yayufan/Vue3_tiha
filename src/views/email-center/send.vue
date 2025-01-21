@@ -165,22 +165,21 @@ const loading = () => {
     fullscreenLoading.value = true;
     setTimeout(() => {
       fullscreenLoading.value = false;
-      resolve(); // 2 秒后 resolve
+      resolve();
     }, 3000);
   });
 }
 
 function optimizeForOutlook(html: any): string {
-  // 替换 <img> 标签为表格布局
+  let imgIndex = 0;
   const optimizedHtml = html.replace(
     /<img([^>]*)>/g,
     (match: any, attributes: any) => {
-      console.log(attributes)
       return `
-        <table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+        <table width="600" align="${imageInfoList[imgIndex].position}" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td>
-              <img${attributes} style="display: block; width: 100%; max-width: ${imageMaxWidthPx.value}; height: auto;" width=${imageMaxWidth.value} height="auto">
+              <img${attributes} style="display: block; width: 100%; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
             </td>
           </tr>
         </table>
@@ -190,26 +189,32 @@ function optimizeForOutlook(html: any): string {
   return optimizedHtml;
 }
 
-const imageMaxWidth = ref("");
-const imageMaxWidthPx = ref("");
+/** 用於儲存各個圖片資訊 */
+const imageInfoList = reactive<Array<{ position: string, maxWidthString: string }>>([]);
+
 const getImageSizeFromDesign = (design: any) => {
   const images: Array<{ src: string; width: number; height: number }> = [];
-  console.log(design)
+  imageInfoList.splice(0, imageInfoList.length);
   // 遍历 design.body.rows
   design.body.rows.forEach((row: any) => {
+    // 模板中的每一個 row 板塊
     row.columns.forEach((column: any) => {
+      // 模板中的每一個 column 板塊
       column.contents.forEach((content: any) => {
-        // console.log(content.values.src)
+        // 內容
         if (content.type === 'image') {
+
+          // 計算寬度資訊 
           let widthPercent = Number(content.values.src.maxWidth.replace('%', '')) / 100;
           let maxWidth = Math.round(content.values.src.width * widthPercent);
-          imageMaxWidthPx.value = `${maxWidth}px`;
-          imageMaxWidth.value = maxWidth.toString();
+          imageInfoList.push({
+            position: content.values.textAlign,
+            maxWidthString: maxWidth.toString()
+          });
         }
       });
     });
   });
-
   return images;
 };
 
