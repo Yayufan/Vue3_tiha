@@ -43,7 +43,7 @@
           <template #default="scope">
             <el-text>{{
               Number(scope.row.birthday.split("-")[0]) - 1911 + "-" + scope.row.birthday.split("-").slice(1).join("-")
-              }}</el-text>
+            }}</el-text>
           </template>
         </el-table-column>
         <el-table-column prop="idCard" label="身份證字號" />
