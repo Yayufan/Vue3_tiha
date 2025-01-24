@@ -92,6 +92,19 @@ const getDataAndEditorLoaded = async () => {
   //當編輯器載入完成,解鎖save按鈕
   emailEditor.value.editor.addEventListener('editor:ready', function () {
     console.log('editor:ready')
+
+    emailEditor.value.editor.setMergeTags({
+
+      member_name: {
+        name: 'Member Name',
+        value: '{{member_name}}',
+      },
+      member_code: {
+        name: 'Member Code',
+        value: '{{member_code}}',
+      },
+    });
+
     isDisabled.value = false;
   });
 
