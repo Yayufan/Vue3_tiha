@@ -97,11 +97,11 @@ const getDataAndEditorLoaded = async () => {
 
       member_name: {
         name: 'Member Name',
-        value: '{{member_name}}',
+        value: '{{memberName}}',
       },
       member_code: {
         name: 'Member Code',
-        value: '{{member_code}}',
+        value: '{{memberCode}}',
       },
     });
 
