@@ -57,6 +57,11 @@
 
       <el-table class="member-table" :data="memberList.records" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
+        <el-table-column fixed prop="code" label="會員編號" width="90">
+          <template #default="scope">
+            <el-text v-if="scope.row.code">HA{{ scope.row.code.toString().padStart(4, '0') }}</el-text>
+          </template>
+        </el-table-column>
         <el-table-column fixed prop="name" label="姓名" width="90" />
         <el-table-column prop="phone" label="手機" width="120" />
         <el-table-column prop="birthday" label="生日" width="120">
@@ -64,7 +69,7 @@
             <el-text>{{ formatToMinguo(scope.row.birthday) }}</el-text>
           </template>
         </el-table-column> <el-table-column prop="idCard" label="身份證字號" width="110" />
-        <el-table-column prop="email" label="信箱" width="150" />
+        <el-table-column prop="email" label="信箱" />
         <el-table-column prop="status" label="審核狀態" min-width="120">
           <template #default="scope">
             <span v-if="scope.row.status == '1'" style="color: green;">審核通過</span>
@@ -167,7 +172,6 @@
               </el-date-picker>
             </el-form-item>
 
-            <RocDatePicker v-model="updateMemberForm.birthday" />
 
             <el-form-item label="性別" prop="gender">
               <el-radio-group v-model="updateMemberForm.gender">
@@ -323,7 +327,6 @@ watch(currentPage, (value, oldValue) => {
 
 
 watch(filterStatus, (value, oldValue) => {
-  console.log('filterStatus', value)
   getMemberByPagination(currentPage.value, 10)
 })
 
@@ -642,7 +645,6 @@ const editRow = (member: any): void => {
 const formatToMinguo = (dateString: string): string => {
   const [year, month, day] = dateString.split('-');
   const minguoYear = (Number(year) - 1911).toString();
-  console.log(minguoYear)
   return `${minguoYear}-${month}-${day}`;
 };
 

@@ -102,8 +102,25 @@ const getDataAndEditorLoaded = async () => {
   //當編輯器載入完成,解鎖save按鈕
   emailEditor.value.editor.addEventListener('editor:ready', function () {
     console.log('editor:ready')
+
+
+    emailEditor.value.editor.setMergeTags({
+
+      member_name: {
+        name: 'Member Name',
+        value: '{{memberName}}',
+      },
+      member_code: {
+        name: 'Member Code',
+        value: '{{memberCode}}',
+      },
+    });
     isDisabled.value = false;
   });
+
+
+
+
 }
 /**------------------ */
 
@@ -179,7 +196,7 @@ function optimizeForOutlook(html: any): string {
         <table width="600" align="${imageInfoList[imgIndex].position}" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td>
-              <img${attributes} style="display: block; width: 100%; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
+              <img${attributes} style="display: block; height: auto;" width=${imageInfoList[imgIndex++].maxWidthString} height="auto">
             </td>
           </tr>
         </table>
@@ -285,7 +302,6 @@ const sendMail = async (sendMailFormRef: FormInstance | undefined) => {
   sendMailFormData.htmlContent = optimizeForOutlook(htmlContent);
   sendMailFormData.plainText = plainText
   console.log("emailTemplate資料: ", sendMailFormData)
-
 
   if (!sendMailFormRef) return;
 
