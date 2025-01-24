@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
 
-    <EmailEditor id="email-editor" :tools="tools" locale='zh-TW' class="vue-email-editor" ref="emailEditor"
+    <EmailEditor :tools="tools" locale='zh-TW' class="vue-email-editor" ref="emailEditor"
       v-on:load="getDataAndEditorLoaded" :options="emailOptions" />
   </div>
 </template>
@@ -108,11 +108,11 @@ const getDataAndEditorLoaded = async () => {
 
       member_name: {
         name: 'Member Name',
-        value: '{{member_name}}',
+        value: '{{memberName}}',
       },
       member_code: {
         name: 'Member Code',
-        value: '{{member_code}}',
+        value: '{{memberCode}}',
       },
     });
     isDisabled.value = false;
@@ -303,10 +303,6 @@ const sendMail = async (sendMailFormRef: FormInstance | undefined) => {
   sendMailFormData.plainText = plainText
   console.log("emailTemplate資料: ", sendMailFormData)
 
-  console.log(sendMailFormData.htmlContent)
-  console.log(sendMailFormData.plainText)
-
-
   if (!sendMailFormRef) return;
 
   sendMailFormRef.validate(async (valid) => {
@@ -314,9 +310,9 @@ const sendMail = async (sendMailFormRef: FormInstance | undefined) => {
       try {
         //呼叫父組件給的新增function API
         await sendEmailApi(sendMailFormData);
-        // await loading()
-        // ElMessage.success('寄送成功');
-        // router.back()
+        await loading()
+        ElMessage.success('寄送成功');
+        router.back()
       } catch (err: any) {
         console.log(err)
       }
