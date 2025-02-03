@@ -70,7 +70,7 @@
           </template>
         </el-table-column> <el-table-column prop="idCard" label="身份證字號" width="110" />
         <el-table-column prop="email" label="信箱" />
-        <el-table-column prop="status" label="審核狀態" min-width="120">
+        <el-table-column prop="status" label="審核狀態" min-width="80">
           <template #default="scope">
             <span v-if="scope.row.status == '1'" style="color: green;">審核通過</span>
             <span v-else-if="scope.row.status == '2'" style="color: red;">駁回申請</span>
