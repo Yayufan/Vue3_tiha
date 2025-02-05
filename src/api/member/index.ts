@@ -35,7 +35,7 @@ export function getMemberByPaginationApi(
   size: number
 ): AxiosPromise {
   return request({
-    url: "/member/pagination",
+    url: "/member/tag/pagination",
     method: "get",
     params: {
       page,
@@ -56,15 +56,18 @@ export function getMemberByPaginationByStatusApi(
   size: number,
   status: string,
   queryText?: string
+  // tags?: number[]
 ): AxiosPromise {
+  // console.log("tags", tags);
   return request({
-    url: "/member/pagination-by-status",
+    url: "/member/tag/pagination-by-query",
     method: "get",
     params: {
       page,
       size,
-      status,
       queryText,
+      status,
+      // tags,
     },
   });
 }

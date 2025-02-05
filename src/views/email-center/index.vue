@@ -61,11 +61,11 @@
       分頁插件 total為總資料數(這邊設置20筆),  default-page-size代表每頁顯示資料(預設為10筆,這邊設置為5筆) 
       current-page當前頁數,官方建議使用v-model與current-page去與自己設定的變量做綁定,
     -->
-      <!-- <div class="example-pagination-block emailTemplate-pagination">
+      <div class="example-pagination-block emailTemplate-pagination">
         <el-pagination layout="prev, pager, next" :page-count="Number(emailTemplateList.pages)"
           :default-page-size="Number(emailTemplateList.size)" v-model:current-page="currentPage"
           :hide-on-single-page="true" />
-      </div> -->
+      </div>
 
 
 

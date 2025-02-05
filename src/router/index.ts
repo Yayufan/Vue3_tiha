@@ -188,6 +188,33 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: "/tags",
+    component: Layout,
+    name: "tags", // 用于 keep-alive, 必须与SFC自动推导或者显示声明的组件name一致
+    // https://cn.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+    meta: {
+      title: "標籤管理",
+      icon: "el-icon-Message",
+      //affix: true,
+      keepAlive: true,
+      alwaysShow: false,
+    },
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/tags/index.vue"),
+        name: "tags-manage",
+        meta: {
+          title: "標籤管理",
+          icon: "el-icon-PriceTag",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+    ],
+  },
 
   //器捐協會沒有類別管理
   // {

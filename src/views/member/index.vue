@@ -306,6 +306,7 @@ let memberList = reactive<Record<string, any>>({
     genderOther: '',
     idCard: '',
     birthday: '',
+    tagSet: [],
   }]
 })
 
@@ -317,6 +318,7 @@ let currentPage = ref(1)
 const getMemberByPagination = async (page: number, size: number) => {
   let res = await getMemberByPaginationByStatusApi(page, size, filterStatus.value, input.value)
   Object.assign(memberList, res.data)
+  console.log(res.data.records)
 }
 
 
@@ -362,7 +364,7 @@ const deleteRow = (id: number): void => {
 //批量刪除同意書的function
 const deleteList = () => {
   if (deleteSelectList.length >= 1) {
-    ElMessageBox.confirm(`確定要刪除這${deleteSelectList.length}個同意書嗎？`, '確認刪除', {
+    ElMessageBox.confirm(`確定要刪除這${deleteSelectList.length}個會員資料嗎？`, '確認刪除', {
       confirmButtonText: '確定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -401,57 +403,6 @@ const insertMemberFormData = reactive({
   phone: '',
 })
 
-//表單校驗規則
-const insertOrganDonationConsentRules = reactive<FormRules>({
-  email: [
-    {
-      required: true,
-      message: 'E-mail不能為空',
-      trigger: 'blur',
-    },
-    {
-      type: 'email',
-      message: '請輸入正確的E-mail格式',
-      trigger: 'blur'
-    },
-  ],
-  password: [
-    {
-      required: true,
-      message: '密碼不能為空',
-      trigger: 'blur',
-    },
-  ],
-  name: [
-    {
-      required: true,
-      message: '姓名不能為空',
-      trigger: 'blur',
-    }
-  ],
-  department: [
-    {
-      required: true,
-      message: '院所不能為空',
-      trigger: 'blur',
-    }
-  ],
-  jobTitle: [
-    {
-      required: true,
-      message: '職稱不能為空',
-      trigger: 'blur',
-    }
-  ],
-  phone: [
-    {
-      required: true,
-      message: '電話不能為空',
-      trigger: 'blur',
-    },
-  ],
-
-})
 
 //顯示新增Dialog
 const toggleAddDialog = () => {
@@ -482,7 +433,6 @@ const submitInsertForm = (form: FormInstance | undefined) => {
   })
 }
 
-
 /**------------編輯內容相關操作---------------------- */
 
 //drawer的開關
@@ -511,29 +461,6 @@ let updateMemberForm = reactive({
   "status": "",
 })
 
-// //編輯的表單內容
-// let updateOrganDonationConsentForm = reactive({
-//   "name": "",
-//   "idCard": "",
-//   "birthday": "",
-//   "gender": "",
-//   "contactNumber": "",
-//   "phoneNumber": "",
-//   "email": "",
-//   "address": "",
-//   "legalRepresentativeName": "",
-//   "legalRepresentativeIdCard": "",
-//   "consentCard": "",
-//   "consentCardNumber": "",
-//   "reason": "",
-//   "wordToFamily": "",
-//   "donateOrgans": [] as string[],
-//   "remark": "",
-//   "healthInsuranceCardAnnotation": "",
-//   "healthInsuranceCardAnnotationDate": "",
-//   "signatureDate": "",
-//   "status": "",
-// })
 
 //編輯表單的校驗規則
 const updateMemberFormRules = reactive<FormRules>({
