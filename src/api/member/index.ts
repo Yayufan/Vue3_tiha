@@ -175,3 +175,11 @@ export function downloadMemberExcelApi(): AxiosPromise {
     responseType: "arraybuffer",
   });
 }
+
+export function assignTagsToMember(data: any): AxiosPromise {
+  return request({
+    url: "/member/tag",
+    method: "put",
+    data,
+  });
+}

@@ -70,7 +70,7 @@
           </template>
         </el-table-column> <el-table-column prop="idCard" label="身份證字號" width="110" />
         <el-table-column prop="email" label="信箱" />
-        <el-table-column prop="status" label="審核狀態" min-width="80">
+        <el-table-column prop="status" label="審核狀態" min-width="40">
           <template #default="scope">
             <span v-if="scope.row.status == '1'" style="color: green;">審核通過</span>
             <span v-else-if="scope.row.status == '2'" style="color: red;">駁回申請</span>
@@ -78,10 +78,33 @@
           </template>
         </el-table-column>
 
+        <el-table-column prop="tagSet" label="標籤" min-width="40" align="center">
+          <template #default="scope">
+            <el-popover v-if="scope.row.tagSet.length > 0" placement="left-start" title="標籤" :width="200"
+              trigger="hover">
+              <template #reference>
+                <el-tag v-if="findFirstVaildTag(scope.row.tagSet)" size="large" round
+                  :color="findFirstVaildTag(scope.row.tagSet).color" effect="light">{{
+                    findFirstVaildTag(scope.row.tagSet).name }}</el-tag>
+              </template>
+              <template #default>
+                <div v-for="tag in scope.row.tagSet" :key="tag.tagId" class="tag-item">
+                  <el-tag v-if="tag.status === 0" size="large" round :color="tag.color">{{
+                    tag.name }}</el-tag>
+                </div>
+              </template>
+            </el-popover>
 
-        <el-table-column fixed="right" label="操作" width="120">
+          </template>
+        </el-table-column>
+
+
+        <el-table-column fixed="right" label="操作" width="150">
           <!-- 透過#default="scope" , 獲取到當前的對象值 , scope.row則是拿到當前那個row的數據  -->
           <template #default="scope">
+            <el-button link type="success" size="small" @click="toggleTagsDialog(scope.row)">
+              Tags
+            </el-button>
             <el-button link type="primary" size="small" @click="editRow(scope.row)">
               Edit
             </el-button>
@@ -102,48 +125,26 @@
           :default-page-size="Number(memberList.size)" v-model:current-page="currentPage" :hide-on-single-page="true" />
       </div>
 
-
-
-      <!-- 新增對話框 -->
-      <!-- <ElDialog v-model="dialogFormVisible" title="新增會員" width="500">
-
-        <el-form :model="insertMemberFormData" ref="form" :rules="insertOrganDonationConsentRules">
-
-          <el-form-item label="Email" :label-width="formLabelWidth" prop="email">
-            <el-input v-model="insertMemberFormData.email" autocomplete="off" />
-          </el-form-item>
-
-          <el-form-item label="密碼" :label-width="formLabelWidth" prop="password">
-            <el-input v-model="insertMemberFormData.password" autocomplete="off" />
-          </el-form-item>
-
-          <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
-            <el-input v-model="insertMemberFormData.name" autocomplete="off" />
-          </el-form-item>
-
-          <el-form-item label="院所" :label-width="formLabelWidth" prop="department">
-            <el-input v-model="insertMemberFormData.department" autocomplete="off" />
-          </el-form-item>
-
-          <el-form-item label="職稱" :label-width="formLabelWidth" prop="jobTitle">
-            <el-input v-model="insertMemberFormData.jobTitle" autocomplete="off" />
-          </el-form-item>
-
-          <el-form-item label="聯絡電話" :label-width="formLabelWidth" prop="phone">
-            <el-input v-model="insertMemberFormData.phone" autocomplete="off" />
-          </el-form-item>
-
-        </el-form>
-
+      <el-dialog v-model="tagsDialogIsOpen" title="編輯標籤">
+        <h1>{{ assignMember.name }}</h1>
+        <div class="transfer-box">
+          <el-transfer v-model="assignMember.tagList" :data="transferDataList" :titles="['未擁有', '已擁有']">
+            <template #default="{ option }">
+              <el-tag :color="option.color" size="large" round>{{ option.label }}</el-tag>
+            </template>
+            <template #left-empty>
+              <el-empty :image-size="60" description="No data" />
+            </template>
+            <template #right-empty>
+              <el-empty :image-size="60" description="No data" />
+            </template>
+          </el-transfer>
+        </div>
         <template #footer>
-          <div class="dialog-footer">
-            <ElButton @click="dialogFormVisible = false">取消</ElButton>
-            <ElButton type="primary" @click="submitInsertForm(form)">
-              送出
-            </ElButton>
-          </div>
+          <el-button>取消</el-button>
+          <el-button type="primary" @click="submitTagsList">保存</el-button>
         </template>
-      </ElDialog> -->
+      </el-dialog>
 
 
 
@@ -247,9 +248,10 @@
 
 import { ref, reactive } from 'vue'
 import { Delete, Plus } from '@element-plus/icons-vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { scrollbarProps, type FormInstance, type FormRules } from 'element-plus'
 
-import { getMemberApi, getAllMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, getMemberCountApi, getMemberCountByStatusApi, updateMemberApi, deleteMemberApi, batchDeleteMemberApi, downloadMemberExcelApi } from '@/api/member'
+import { getMemberApi, getAllMemberApi, getMemberByPaginationApi, getMemberByPaginationByStatusApi, getMemberCountApi, getMemberCountByStatusApi, updateMemberApi, deleteMemberApi, batchDeleteMemberApi, downloadMemberExcelApi, assignTagsToMember } from '@/api/member'
+import { getAllTagsApi } from '@/api/tag'
 
 
 
@@ -289,6 +291,13 @@ let memberCount = ref(0)
 const getMemberCount = async () => {
   let res = await getMemberCountApi()
   memberCount.value = res.data
+}
+
+const setTagEffect = (status: number) => {
+  if (status === 1) {
+    console.log('dark')
+    return 'light'
+  }
 }
 
 
@@ -582,11 +591,61 @@ const parseFromMinguo = (minguoString: string): string => {
 };
 
 
+/**-------------------標籤-------------------- */
+let tagsDialogIsOpen = ref(false);
+let assignMember = reactive<any>({});
+
+let tagsList = reactive<any>([]);
+
+let transferDataList = reactive<any>([]);
+
+const getTagsList = async () => {
+  let res = await getAllTagsApi()
+  Object.assign(tagsList, res.data);
+  res.data.forEach((item: any) => {
+    transferDataList.push({
+      label: item.name,
+      key: item.tagId,
+      disabled: item.status === 1,
+      color: item.color
+    })
+  })
+  console.log(transferDataList);
+}
+
+const findFirstVaildTag = (tagSet: any) => {
+  for (let i = 0; i < tagSet.length; i++) {
+    if (tagSet[i].status === 0) {
+      return tagSet[i];
+    }
+  }
+  return '';
+}
+
+const toggleTagsDialog = async (member: any) => {
+  assignMember = member;
+  assignMember.tagList = Array.from(member.tagSet).map((item: any) => item.tagId);
+  tagsDialogIsOpen.value = true;
+}
+
+const submitTagsList = async () => {
+  let data = {
+    memberId: assignMember.memberId,
+    targetTagIdList: assignMember.tagList
+  }
+  let res = await assignTagsToMember(data);
+  getMemberByPagination(currentPage.value, 10);
+  tagsDialogIsOpen.value = false;
+}
+
+
+
 /**-------------------掛載頁面時執行-------------------- */
 
 onMounted(() => {
   getMemberByPagination(1, 10)
   getMemberCount()
+  getTagsList()
 })
 
 
@@ -647,6 +706,15 @@ onMounted(() => {
   margin-left: 1rem;
 }
 
+.transfer-box {
+  display: flex;
+  justify-content: center;
+}
+
+.tag-item {
+  display: flex;
+}
+
 /**
   使用Vue3 element plus 專屬的改變UI組件CSS 寫法 '深層覆蓋'
   分頁組件引入盒子,重置分頁組件CSS */
@@ -672,5 +740,14 @@ onMounted(() => {
     margin-bottom: 16px;
   }
 
+}
+
+:deep(.el-tag__content) {
+  color: white;
+  font-size: 14px;
+}
+
+:deep(.el-tag__close) {
+  color: red;
 }
 </style>

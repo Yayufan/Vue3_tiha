@@ -155,7 +155,8 @@
         </template>
       </el-drawer>
 
-      <el-dialog v-if="addMemberDialogIsVisible" v-model="addMemberDialogIsVisible" title="新增會員">
+      <el-dialog v-if="addMemberDialogIsVisible" v-model="addMemberDialogIsVisible" title="新增會員"
+        :before-close="cancelAdd">
         <h3>標籤: <el-tag :color="addMemberTag.color" class="tag-box" round>{{ addMemberTag.name }}</el-tag></h3>
 
         <div class="search-bar">
@@ -216,6 +217,7 @@ import { addTagApi, assignMemberToTagApi, deleteTagApi, getAllTagsApi, getTagsBy
 import { getMemberByPaginationApi, getMemberByPaginationByStatusApi } from '@/api/member'
 import type { FormInstance, FormRules } from 'element-plus'
 import { typeEnums } from '@/enums/TypeEnum'
+import { s } from 'vite/dist/node/types.d-aGj9QkWt'
 
 const formLabelWidth = '70px'
 const route = useRoute()
@@ -445,6 +447,8 @@ let allMemberList = reactive<Record<string, any>>([]);
 let submitMemeberSet = new Set()
 const getMemberListByPagination = async (page: number, size: number) => {
   let res = await getMemberByPaginationByStatusApi(page, size, filterStatus.value, input.value);
+  allMemberList.length = 0
+  // submitMemeberSet.clear()
   Object.assign(allMemberList, res.data)
 
   /** 確認獲取到 table */
@@ -491,6 +495,8 @@ const cliclAddMember = async () => {
     await assignMemberToTagApi(data)
     ElMessage.success('保存成功')
     addMemberDialogIsVisible.value = false
+    memberCurrentPage.value = 1
+    submitMemeberSet.clear()
     resetQueryText()
   } catch (err: any) {
     console.log(err)
@@ -499,6 +505,7 @@ const cliclAddMember = async () => {
 
 const cancelAdd = () => {
   addMemberDialogIsVisible.value = false
+  submitMemeberSet.clear()
   resetQueryText();
 }
 
