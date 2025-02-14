@@ -18,7 +18,7 @@
   <el-table class="no-img-article-table" :data="noImgArticleList.records" @selection-change="handleSelectionChange"
     empty-text="No Data">
     <el-table-column type="selection" width="55" />
-    <el-table-column fixed prop="announcementDate" label="公告日期" width="150" />
+    <!-- <el-table-column fixed prop="announcementDate" label="公告日期" width="150" /> -->
     <el-table-column prop="type" label="類別" width="120" />
     <el-table-column prop="title" label="標題" min-width="120" />
 
@@ -64,10 +64,10 @@
         <el-input type="textarea" v-model="noImgArticleFormData.description" autocomplete="off" />
       </el-form-item>
 
-      <el-form-item label="公告日期" :label-width="formLabelWidth" prop="announcementDate">
+      <!-- <el-form-item label="公告日期" :label-width="formLabelWidth" prop="announcementDate">
         <el-date-picker v-model="noImgArticleFormData.announcementDate" type="date" placeholder="Pick a Date"
           format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
-      </el-form-item>
+      </el-form-item> -->
 
     </el-form>
 
@@ -134,16 +134,25 @@ watch(() => { return props.table }, (newValue, oldValue) => {
 
 /**--------------顯示數據相關---------------------------- */
 
-//設定分頁組件,currentPage當前頁數
-let currentPage = ref(1)
+//分頁組件， 從查詢參數中獲取初始值从查询参数中獲取初始值
+// console.log(route)
+let currentPage = ref<number>(parseInt(route.query.page as string) || 1);
 
 //獲取的最新消息List
 let noImgArticleList = reactive<Record<string, any>>({})
 noImgArticleList = props.table
 
+
+//更新URL會帶動頁面更新,
+const updateURL = (page: number, size: number) => {
+  router.push({ query: { ...route.query, page, size } })
+}
+
 //監聽當前頁數的變化,如果有更動就call API 獲取數組數據
 watch(currentPage, (value, oldValue) => {
-  props.getApi(value, 10)
+  // console.log("當前頁為 ", value)
+  let pageSize = ref<number>(parseInt(route.query.size as string) || 10);
+  updateURL(value, pageSize.value)
 })
 
 
@@ -208,7 +217,7 @@ const noImgArticleFormData = reactive({
   type: '一般公告',
   title: '',
   description: null,
-  announcementDate: '',
+  // announcementDate: '',
   groupType: ''
 })
 //獲取父組件給的group
@@ -235,13 +244,13 @@ const noImgArticleRules = reactive<FormRules>({
       trigger: 'blur'
     }
   ],
-  announcementDate: [
-    {
-      required: true,
-      message: '公告日期不能為空',
-      trigger: 'blur',
-    }
-  ],
+  // announcementDate: [
+  //   {
+  //     required: true,
+  //     message: '公告日期不能為空',
+  //     trigger: 'blur',
+  //   }
+  // ],
   description: [
     {
       required: true,
@@ -292,8 +301,13 @@ const submitForm = (form: FormInstance | undefined) => {
 /**------------編輯內容相關操作---------------------- */
 //編輯最新消息
 const editRow = (id: number): void => {
-  const currentPath = route.fullPath
-  router.push(currentPath + '/' + id)
+  const currentPath = route.path
+  const query = route.query
+
+  router.push({
+    path: currentPath + '/' + id, // 目標路徑
+    query: query, // 帶上當前的查詢參數
+  })
 }
 
 

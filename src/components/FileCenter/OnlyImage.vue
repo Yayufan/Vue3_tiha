@@ -2,13 +2,13 @@
 <template>
   <div class="function-bar">
     <el-button type="primary" @click="toggleAddDialog">
-      新增檔案<el-icon class="el-icon--right">
+      新增圖檔<el-icon class="el-icon--right">
         <Plus />
       </el-icon>
     </el-button>
 
     <el-button type="danger" @click="deleteList" :disabled="deleteSelectList.length > 0 ? false : true">
-      刪除檔案<el-icon class="el-icon--right">
+      刪除圖檔<el-icon class="el-icon--right">
         <Delete />
       </el-icon>
     </el-button>
@@ -22,6 +22,7 @@
     <el-table-column prop="name" label="顯示名稱" min-width="120" />
     <el-table-column prop="description" label="描述" min-width="120" />
     <el-table-column prop="sort" label="排序值" min-width="120" />
+    <el-table-column prop="link" label="外部連結" min-width="120" />
 
     <el-table-column fixed="right" label="操作" width="120">
       <!-- 透過#default="scope" , 獲取到當前的對象值 , scope.row則是拿到當前那個row的數據  -->
@@ -48,7 +49,7 @@
 
 
   <!-- 創建活動對話框 -->
-  <ElDialog v-model="dialogFormVisible" title="新增檔案" width="500">
+  <ElDialog v-model="dialogFormVisible" title="新增圖檔" width="500">
 
     <el-form :model="noImgArticleFormData" ref="form" :rules="noImgArticleRules">
 
@@ -70,7 +71,14 @@
         <el-input-number :min="1" v-model="noImgArticleFormData.sort" size="small" />
       </el-form-item>
 
-      <el-form-item label="檔案上傳" :label-width="formLabelWidth">
+      <el-form-item label="外部連結" :label-width="formLabelWidth" prop="link">
+        <el-input v-model="noImgArticleFormData.link" type="textarea" autocomplete="off" />
+      </el-form-item>
+
+      <!-- <p style="margin-left: 15%;color: red;">* 建議寬*高為 150px * 85px</p> -->
+
+
+      <el-form-item label="圖檔上傳" :label-width="formLabelWidth">
         <el-upload ref="fileComponent" class="thumbnail-uploader" :action="envAPI + '/upload/img'"
           :show-file-list="true" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :limit="1"
           :on-exceed="handleExceed">
@@ -137,14 +145,22 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 }
 
 //檔案上傳前的回調
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile: any) => {
   //如果需要限制檔案大小
   // if (rawFile.size / 1024 / 1024 > 2) {
   //   ElMessage.error('Avatar picture size can not exceed 2MB!')
   //   return false
   // }
 
-  return true
+  //如果要限制檔案的類型
+  console.log('這是上傳前回調', rawFile)
+  if (rawFile.type == "image/jpeg" || rawFile.type == "image/png") {
+    return true
+  }
+
+  ElMessage.error('檔案必須為JPG 或者 PNG檔')
+  return false
+
 }
 
 //超出檔案數量
@@ -280,7 +296,8 @@ const noImgArticleFormData = reactive({
   type: '',
   name: '',
   description: null,
-  sort: 500
+  sort: 500,
+  link: ''
 })
 //獲取父組件給的group
 noImgArticleFormData.groupType = props.group

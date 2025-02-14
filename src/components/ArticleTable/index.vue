@@ -148,13 +148,20 @@ const envAPI = import.meta.env.VITE_APP_BASE_API;
 
 
 /** ---------------- 一般資料顯示 --------------------- */
-//設定分頁組件,currentPage當前頁數
-let currentPage = ref(1)
+
+//分頁組件， 從查詢參數中獲取初始值从查询参数中獲取初始值
+let currentPage = ref<number>(parseInt(route.query.page as string) || 1);
+
 
 //獲取的文章List初始化
 let articleList = reactive<Record<string, any>>({})
 //獲取父組件給的資料並賦值
 articleList = props.table
+
+//更新URL會帶動頁面更新,
+const updateURL = (page: number, size: number) => {
+  router.push({ query: { ...route.query, page, size } })
+}
 
 //如果父組件的資料為異步傳遞就使用watch
 watch(() => { return props.table }, (newValue, oldValue) => {
@@ -163,7 +170,8 @@ watch(() => { return props.table }, (newValue, oldValue) => {
 
 //監聽當前頁數的變化,如果有更動就call API 獲取數組數據
 watch(currentPage, (value, oldValue) => {
-  props.getApi(value, 10)
+  let pageSize = ref<number>(parseInt(route.query.size as string) || 10);
+  updateURL(value, pageSize.value)
 })
 
 /** -----------------表單相關-------------------- */
@@ -347,8 +355,14 @@ const deleteList = () => {
 /**-----------編輯相關操作------------------ */
 //編輯醫學新知
 const editRow = (id: number): void => {
-  const currentPath = route.fullPath
-  router.push(currentPath + '/' + id)
+  const currentPath = route.path
+  const query = route.query
+
+  router.push({
+    path: currentPath + '/' + id, // 目標路徑
+    query: query, // 帶上當前的查詢參數
+  })
+
 }
 
 

@@ -42,6 +42,11 @@
         </div>
       </el-form>
 
+      <!-- 文章附件上傳組件 -->
+      <AttachmentComponent :articleId="id" :getApi="getAllArticleAttachmentApi" :addApi="addArticleAttachmentApi"
+        :deleteApi="deleteArticleAttachmentApi" />
+
+      <!-- CKEditor5 編輯器組件   -->
       <CustomCKEditor :scope="scope" :htmlContent="article.content" :updateContent="updateContent">
       </CustomCKEditor>
 
@@ -58,6 +63,8 @@ import { ref, reactive } from 'vue'
 import CustomCKEditor from '@/components/CustomCKEditor/index.vue'
 import type { FormInstance, FormRules, UploadRawFile, UploadProps } from 'element-plus'
 import { updateArticleApi, getArticleApi } from '@/api/article'
+import AttachmentComponent from '@/components/ArticleAttachment/index.vue'
+import { getAllArticleAttachmentApi, addArticleAttachmentApi, deleteArticleAttachmentApi } from '@/api/articleAttachment'
 
 
 //路由參數,這邊注意解構賦值後,會失去響應式
@@ -168,23 +175,30 @@ const getArticle = async () => {
 
 //返回列表
 const back = () => {
+
+  // 取得當前路徑
+  const currentPath = route.path; // 路徑部分，例如 /background/news-content/news
+  const query = route.query; // 查詢參數部分，例如 { page: '3', size: '10' }
+
   // 取得當前路徑並按 '/' 分割為陣列
-  const pathSegments = route.path.split('/').filter(Boolean);
+  const pathSegments = currentPath.split('/').filter(Boolean);
 
   // 確保有上層路徑可回
   if (pathSegments.length > 1) {
     // 移除最後一段路徑
     pathSegments.pop();
 
-    // 組合回去並加上 `/`
+    // 組合回去並加上 '/'
     const parentPath = '/' + pathSegments.join('/');
 
-    // 導航回上層路徑
-    router.push(parentPath);
+    console.log('上層路徑', parentPath)
+
+    // 導航回上層路徑，並保留查詢參數
+    router.push({ path: parentPath, query });
 
   } else {
-    //沒有父路由,返回上一個歷史紀錄
-    router.go(-1)
+    // 沒有父路由，返回上一個歷史紀錄
+    router.go(-1);
   }
 }
 
