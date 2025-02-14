@@ -210,20 +210,20 @@ const getOrganDonationConsentCount = async () => {
 }
 
 //獲取總文章瀏覽量總數 以及 各類別文章數量
-const getCounteData = async () => {
-  totalViews.value = (await getArticleViewsCountApi()).data
-  newsCount.value = (await getArticleCountByGroupApi("news")).data
-  eventHighlightsCount.value = (await getArticleCountByGroupApi("eventHighlights")).data
-  organDonationCount.value = (await getArticleCountByGroupApi("organDonation")).data
-  storyDonorFamilyCount.value = (await getArticleCountByGroupApi("storyDonorFamily")).data
-  storyRecipientCount.value = (await getArticleCountByGroupApi("storyRecipient")).data
-  videoAreaCount.value = (await getArticleCountByGroupApi("videoArea")).data
-  doctorVoiceCount.value = (await getArticleCountByGroupApi("doctorVoice")).data
-  assistanceResourcesCount.value = (await getArticleCountByGroupApi("assistanceResources")).data
-  bookRecommendationsCount.value = (await getArticleCountByGroupApi("bookRecommendations")).data
-  socialWorkColumnCount.value = (await getArticleCountByGroupApi("socialWorkColumn")).data
+// const getCounteData = async () => {
+//   totalViews.value = (await getArticleViewsCountApi()).data
+//   newsCount.value = (await getArticleCountByGroupApi("news")).data
+//   eventHighlightsCount.value = (await getArticleCountByGroupApi("eventHighlights")).data
+//   organDonationCount.value = (await getArticleCountByGroupApi("organDonation")).data
+//   storyDonorFamilyCount.value = (await getArticleCountByGroupApi("storyDonorFamily")).data
+//   storyRecipientCount.value = (await getArticleCountByGroupApi("storyRecipient")).data
+//   videoAreaCount.value = (await getArticleCountByGroupApi("videoArea")).data
+//   doctorVoiceCount.value = (await getArticleCountByGroupApi("doctorVoice")).data
+//   assistanceResourcesCount.value = (await getArticleCountByGroupApi("assistanceResources")).data
+//   bookRecommendationsCount.value = (await getArticleCountByGroupApi("bookRecommendations")).data
+//   socialWorkColumnCount.value = (await getArticleCountByGroupApi("socialWorkColumn")).data
 
-}
+// }
 
 
 
@@ -231,9 +231,8 @@ const getCounteData = async () => {
 //掛載時獲取首頁Dashboard數據
 onMounted(() => {
   //獲取同意書審核數量
-  getOrganDonationConsentCount()
 
-  getCounteData()
+  // getCounteData()
 
 })
 
