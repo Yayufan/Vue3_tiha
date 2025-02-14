@@ -266,7 +266,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: "信息看板-內容管理",
       icon: "el-icon-EditPen",
-      hidden: true,
+      hidden: false,
       roles: ["ADMIN"],
     },
     children: [
