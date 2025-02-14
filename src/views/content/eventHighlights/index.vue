@@ -29,9 +29,12 @@ const GROUP = "eventHighlights"
 //後端獲取Page資料後要傳給子組件的數據
 let articleList = reactive({})
 
+let urlPage = ref<number>(parseInt(route.query.page as string) || 1);
+let urlSize = ref<number>(parseInt(route.query.size as string) || 10);
+
 //獲取文章
-const getArticle = async (page: number, size: number) => {
-  let res = await getAllArticleByGroupByPaginationApi(GROUP, page, size)
+const getArticle = async () => {
+  let res = await getAllArticleByGroupByPaginationApi(GROUP, urlPage.value, urlSize.value)
   //固定轉換數據給前端組件使用
   let transData = transFormPaginationByArticle(res.data, "articleId")
   Object.assign(articleList, transData)
@@ -42,26 +45,31 @@ const getArticle = async (page: number, size: number) => {
 const addArticle = async (data: any) => {
   // console.log('子組件傳來的data', data)
   let res = await addArticleApi(data)
-  const currentPath = route.fullPath
-  router.push(currentPath + '/' + res.data)
-  getArticle(1, 10)
+  const currentPath = route.path
+  const query = route.query
+
+  router.push({
+    path: currentPath + '/' + res.data,// 目標路徑
+    query: query,// 帶上當前的查詢參數
+  })
+
 }
 
 //刪除文章
 const deleteArticle = async (id: number) => {
   await deleteArticleApi(id)
-  getArticle(1, 10)
+  getArticle()
 }
 
 //批量文章
 const batchDeleteArticle = async (data: any) => {
   await batchDeleteArticleApi(data)
-  getArticle(1, 10)
+  getArticle()
 }
 
 //頁面掛載時獲取數據
 onMounted(() => {
-  getArticle(1, 10)
+  getArticle()
 })
 
 
