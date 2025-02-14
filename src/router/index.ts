@@ -328,6 +328,90 @@ export const constantRoutes: RouteRecordRaw[] = [
     ],
   },
 
+  // 影音專區
+  {
+    path: "/videoArea-content",
+    component: Layout,
+    redirect: "/videoArea-content/featured",
+    name: "VideoAreaContent",
+    meta: {
+      title: "影音專區-內容管理",
+      icon: "el-icon-EditPen",
+      hidden: false,
+      roles: ["ADMIN"],
+    },
+    children: [
+      /**影片精選路由,以及其編輯路由 */
+      {
+        path: "featured",
+        component: () => import("@/views/content/videoArea/index.vue"),
+        name: "VideoAreaContentFeatured",
+        meta: {
+          title: "影音專區-內容管理",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      {
+        path: "featured/:id",
+        component: () => import("@/views/content/videoArea/VideoAreaItem.vue"),
+        name: "VideoAreaContentFeaturedItem",
+        props: true,
+        meta: {
+          title: "影片精選編輯",
+          icon: "menu",
+          hidden: true,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+
+    ],
+  },
+
+  // 衛教資訊
+  {
+    path: "/health-education-info-content",
+    component: Layout,
+    redirect: "/health-education-info-content/case-sharing",
+    name: "HealthEducationInfoContent",
+    meta: {
+      title: "衛教資訊-內容管理",
+      icon: "el-icon-EditPen",
+      hidden: false,
+      roles: ["ADMIN"],
+    },
+    children: [
+      /**案例分享路由,以及其編輯路由 */
+      {
+        path: "case-sharing",
+        component: () => import("@/views/content/caseSharing/index.vue"),
+        name: "HealthEducationInfoContentCaseSharing",
+        meta: {
+          title: "衛教資訊-內容管理",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      {
+        path: "case-sharing/:id",
+        component: () => import("@/views/content/caseSharing/CaseSharingItem.vue"),
+        name: "HealthEducationInfoContentCaseSharingItem",
+        props: true,
+        meta: {
+          title: "案例分享編輯",
+          icon: "menu",
+          hidden: true,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      }]
+  },
+
 
 
   //---------------------------
@@ -551,7 +635,7 @@ export const constantRoutes: RouteRecordRaw[] = [
    */
 
   /*
-
+ 
   {
     path: "/system",
     component: Layout,
@@ -626,7 +710,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
     ],
   },
-
+ 
   //多級路由範例
   {
     path: "/multi-level",
@@ -696,7 +780,7 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
     ],
   },
-
+ 
   // 外部链接
   // {
   //   path: "/external-link",

@@ -2,7 +2,7 @@
 <template>
   <section class="article-section">
     <el-card class="article-card">
-      <h1>影音專區文章管理</h1>
+      <h1>案例分享文章管理</h1>
       <ArticleTable :table="articleList" :getApi="getArticle" :addApi="addArticle" :deleteApi="deleteArticle"
         :batchDeleteApi="batchDeleteArticle" :group="GROUP">
       </ArticleTable>
@@ -24,7 +24,7 @@ const route = useRoute()
 const router = useRouter()
 
 //設定article_group , 最重要!!!!!!!
-const GROUP = "videoArea"
+const GROUP = "caseSharing"
 
 //後端獲取Page資料後要傳給子組件的數據
 let articleList = reactive({})
