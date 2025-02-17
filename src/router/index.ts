@@ -355,7 +355,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         },
       },
       {
-        path: "featured/:id",
+        path: "featuredVideo/:id",
         component: () => import("@/views/content/featuredVideo/featuredVideoItem.vue"),
         name: "VideoAreaContentFeaturedVideoItem",
         props: true,

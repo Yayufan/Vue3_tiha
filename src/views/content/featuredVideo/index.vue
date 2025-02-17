@@ -24,7 +24,7 @@ const route = useRoute()
 const router = useRouter()
 
 //設定article_group , 最重要!!!!!!!
-const GROUP = "videoArea"
+const GROUP = "featuredVideo"
 
 //後端獲取Page資料後要傳給子組件的數據
 let articleList = reactive({})
