@@ -2,7 +2,7 @@
 <template>
   <section class="article-section">
     <el-card class="article-card">
-      <h1>活動花絮文章管理</h1>
+      <h1>影片精選文章管理</h1>
       <ArticleTable :table="articleList" :getApi="getArticle" :addApi="addArticle" :deleteApi="deleteArticle"
         :batchDeleteApi="batchDeleteArticle" :group="GROUP">
       </ArticleTable>

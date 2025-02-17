@@ -332,7 +332,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/videoArea-content",
     component: Layout,
-    redirect: "/videoArea-content/featured",
+    redirect: "/videoArea-content/featuredVideo",
     name: "VideoAreaContent",
     meta: {
       title: "影音專區-內容管理",
@@ -343,9 +343,9 @@ export const constantRoutes: RouteRecordRaw[] = [
     children: [
       /**影片精選路由,以及其編輯路由 */
       {
-        path: "featured",
-        component: () => import("@/views/content/videoArea/index.vue"),
-        name: "VideoAreaContentFeatured",
+        path: "featuredVideo",
+        component: () => import("@/views/content/featuredVideo/index.vue"),
+        name: "VideoAreaContentFeaturedVideo",
         meta: {
           title: "影音專區-內容管理",
           icon: "menu",
@@ -356,8 +356,8 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
       {
         path: "featured/:id",
-        component: () => import("@/views/content/videoArea/VideoAreaItem.vue"),
-        name: "VideoAreaContentFeaturedItem",
+        component: () => import("@/views/content/featuredVideo/featuredVideoItem.vue"),
+        name: "VideoAreaContentFeaturedVideoItem",
         props: true,
         meta: {
           title: "影片精選編輯",
