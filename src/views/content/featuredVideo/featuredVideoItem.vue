@@ -42,6 +42,11 @@
         </div>
       </el-form>
 
+      <!-- 文章附件上傳組件 -->
+      <AttachmentComponent :articleId="id" :getApi="getAllArticleAttachmentApi" :addApi="addArticleAttachmentApi"
+        :deleteApi="deleteArticleAttachmentApi" />
+
+      <!-- CKEditor5 編輯器組件   -->
       <CustomCKEditor :scope="scope" :htmlContent="article.content" :updateContent="updateContent">
       </CustomCKEditor>
 
@@ -58,7 +63,8 @@ import { ref, reactive } from 'vue'
 import CustomCKEditor from '@/components/CustomCKEditor/index.vue'
 import type { FormInstance, FormRules, UploadRawFile, UploadProps } from 'element-plus'
 import { updateArticleApi, getArticleApi } from '@/api/article'
-
+import AttachmentComponent from '@/components/ArticleAttachment/index.vue'
+import { getAllArticleAttachmentApi, addArticleAttachmentApi, deleteArticleAttachmentApi } from '@/api/articleAttachment'
 
 //路由參數,這邊注意解構賦值後,會失去響應式
 let { id } = defineProps(['id'])
