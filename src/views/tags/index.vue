@@ -74,7 +74,7 @@
           <div class="tag-box">
             <el-tag v-if="insertTagFormData.color" :color="insertTagFormData.color" round size="large">{{
               insertTagFormData.name
-              }}</el-tag>
+            }}</el-tag>
           </div>
         </div>
 
@@ -117,7 +117,7 @@
           <div class="tag-box">
             <el-tag :color="updateTagForm.color" round size="large">{{
               updateTagForm.name
-              }}</el-tag>
+            }}</el-tag>
           </div>
         </div>
         <el-form label-position="top" label-width="auto" :model="updateTagForm" :rules="updateTagFormRules"
@@ -183,7 +183,8 @@
           </el-select>
 
         </div>
-        <el-table :data="allMemberList.records" ref="memberTableRef" :row-key="getRowKey" @select="handleMemberSelect">
+        <el-table :data="allMemberList.records" ref="memberTableRef" :row-key="getRowKey" @select="handleMemberSelect"
+          empty-text="查無資料">
           <el-table-column type="selection" width="55" :reserve-selection="true" />
           <el-table-column prop="name" label="名稱" />
           <el-table-column prop="email" label="Email" />
@@ -448,6 +449,11 @@ let submitMemeberSet = new Set()
 const getMemberListByPagination = async (page: number, size: number) => {
   let res = await getMemberByPaginationByStatusApi(page, size, filterStatus.value, input.value);
   allMemberList.length = 0
+  if (res.data.records == null) {
+    allMemberList.records = []
+    ElMessage.error('查無資料')
+    return
+  };
   // submitMemeberSet.clear()
   Object.assign(allMemberList, res.data)
 
