@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <router-view :key="$route.fullPath">
+    <router-view :key="route.fullPath">
       <template #default="{ Component, route }">
         <transition enter-active-class="animate__animated animate__fadeIn" mode="out-in">
           <keep-alive :include="cachedViews">
@@ -14,6 +14,8 @@
 
 <script setup lang="ts">
 import { useTagsViewStore } from "@/store";
+
+const route = useRoute()
 
 const cachedViews = computed(() => useTagsViewStore().cachedViews); // 缓存页面集合
 </script>
