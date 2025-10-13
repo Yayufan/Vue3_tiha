@@ -26,7 +26,10 @@
     <!-- 創建活動對話框 -->
     <ElDialog v-model="dialogFormVisible" title="新增附件" width="500">
 
-      <el-text class="mx-1" type="danger">注意!!! 點擊 <span style="font-weight: bold">'建立'</span> 檔案上傳會直接完成 </el-text>
+      <el-text class="mx-1" type="danger">* 注意!!! 點擊 <span style="font-weight: bold">'建立'</span> 檔案上傳會直接完成 </el-text>
+      <br>
+
+      <el-text class="mx-1" type="info">* 檔案超過 20MB 可能需要較長時間上傳，建議使用有線網路或穩定 Wi-Fi </el-text>
       <br><br>
 
       <el-form :model="articleAttachmentFormData" ref="form" :rules="articleAttachmentRules" label-position="top">
@@ -35,7 +38,7 @@
           <el-input v-model="articleAttachmentFormData.name" autocomplete="off" placeholder="" />
         </el-form-item>
 
-        <el-form-item :label="'檔案上傳(單個檔案不超過10MB)'" :label-width="formLabelWidth">
+        <el-form-item :label="'檔案上傳(單個檔案不超過50MB)'" :label-width="formLabelWidth">
 
           <el-upload :on-change="handleChange" v-model:file-list="fileList" class="thumbnail-uploader"
             :action="envAPI + '/upload/img'" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
@@ -181,8 +184,8 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 
 //檔案上傳前的回調
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.size / 1024 / 1024 > 10) {
-    ElMessage.error('File Size can not exceed 10MB!')
+  if (rawFile.size / 1024 / 1024 > 50) {
+    ElMessage.error('File Size can not exceed 50MB!')
     return false
   }
   return true
