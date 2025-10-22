@@ -55,7 +55,7 @@
       <template #footer>
         <div class="dialog-footer">
           <ElButton @click="backAndClearFileList">取消</ElButton>
-          <ElButton type="primary" @click="addAttachment(form)">
+          <ElButton type="primary" :disabled="lock" @click="addAttachment(form)">
             建立
           </ElButton>
         </div>
@@ -210,6 +210,8 @@ const form = ref()
 //formLabel 寬度
 const formLabelWidth = '140px'
 
+let lock = ref(false)
+
 //表單數據
 const articleAttachmentFormData = reactive({
   articleId: '',
@@ -262,6 +264,10 @@ const addAttachment = (form: FormInstance | undefined) => {
   form.validate(async (valid) => {
     if (valid) {
       try {
+
+        lock.value = true
+        ElMessage.info("上傳中")
+
         let formData = new FormData()
         // 將響應式對象轉換為普通對象，然後轉換為 JSON 字符串
         const jsonData = JSON.stringify(articleAttachmentFormData)
@@ -277,9 +283,11 @@ const addAttachment = (form: FormInstance | undefined) => {
         imgFile = <UploadRawFile>{}
 
         ElMessage.success("上傳成功")
+        lock.value = false
 
       } catch (err: any) {
         console.log(err)
+        lock.value = false
       }
 
       //最終都將這個dialog關掉
