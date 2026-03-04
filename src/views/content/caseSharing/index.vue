@@ -2,7 +2,7 @@
 <template>
   <section class="article-section">
     <el-card class="article-card">
-      <h1>案例分享文章管理</h1>
+      <h1>病友故事文章管理</h1>
       <ArticleTable :table="articleList" :getApi="getArticle" :addApi="addArticle" :deleteApi="deleteArticle"
         :batchDeleteApi="batchDeleteArticle" :group="GROUP">
       </ArticleTable>
