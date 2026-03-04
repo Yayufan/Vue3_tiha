@@ -264,7 +264,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     redirect: "/news-content/news",
     name: "NewsContent",
     meta: {
-      title: "信息看板-內容管理",
+      title: "活動消息-內容管理",
       icon: "el-icon-EditPen",
       hidden: false,
       roles: ["ADMIN"],
@@ -324,6 +324,33 @@ export const constantRoutes: RouteRecordRaw[] = [
           keepAlive: true,
         },
       },
+      /**媒體報導路由,以及其編輯路由 */
+      {
+        path: "media-reports",
+        component: () => import("@/views/content/mediaReports/index.vue"),
+        name: "NewsContentMediaReports",
+        meta: {
+          title: "媒體報導",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      {
+        path: "media-reports/:id",
+        component: () =>
+          import("@/views/content/mediaReports/MediaReportsItem.vue"),
+        name: "NewsContentMediaReportsItem",
+        props: true,
+        meta: {
+          title: "媒體報導文章編輯",
+          icon: "dict",
+          hidden: true,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
 
     ],
   },
@@ -375,22 +402,48 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/health-education-info-content",
     component: Layout,
-    redirect: "/health-education-info-content/case-sharing",
+    redirect: "/health-education-info-content/health-education",
     name: "HealthEducationInfoContent",
     meta: {
-      title: "衛教資訊-內容管理",
+      title: "衛教與關懷-內容管理",
       icon: "el-icon-EditPen",
       hidden: false,
       roles: ["ADMIN"],
     },
     children: [
-      /**案例分享路由,以及其編輯路由 */
+      /**衛教資訊路由,以及其編輯路由 */
+      {
+        path: "health-education",
+        component: () => import("@/views/content/healthEducation/index.vue"),
+        name: "HealthEducationInfoContentHealthEducation",
+        meta: {
+          title: "衛教資訊-內容管理",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      {
+        path: "health-education/:id",
+        component: () => import("@/views/content/healthEducation/HealthEducationItem.vue"),
+        name: "HealthEducationInfoContentHealthEducationItem",
+        props: true,
+        meta: {
+          title: "衛教資訊編輯",
+          icon: "menu",
+          hidden: true,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      /**病友故事路由,以及其編輯路由 */
       {
         path: "case-sharing",
         component: () => import("@/views/content/caseSharing/index.vue"),
         name: "HealthEducationInfoContentCaseSharing",
         meta: {
-          title: "衛教資訊-內容管理",
+          title: "病友故事-內容管理",
           icon: "menu",
           hidden: false,
           roles: ["ADMIN"],
@@ -403,13 +456,14 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: "HealthEducationInfoContentCaseSharingItem",
         props: true,
         meta: {
-          title: "案例分享編輯",
+          title: "病友故事編輯",
           icon: "menu",
           hidden: true,
           roles: ["ADMIN"],
           keepAlive: true,
         },
-      }]
+      }
+    ]
   },
 
 
