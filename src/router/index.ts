@@ -258,6 +258,64 @@ export const constantRoutes: RouteRecordRaw[] = [
   //   ]
   // },
 
+  /**合作申請書路由 */
+  {
+    path: "/abous-us",
+    component: Layout,
+    name: "AboutUs",
+    meta: {
+      title: "關於我們-內容管理",
+      icon: "menu",
+      hidden: false,
+      roles: ["ADMIN"],
+      keepAlive: true,
+    },
+    children: [
+      /**組織架構路由，單頁式修改*/
+      {
+        path: "organization",
+        component: () => import("@/views/content/singlePage/organization/index.vue"),
+        name: "AboutUsOrganization",
+        meta: {
+          title: "組織架構",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      /**發展歷程路由，單頁式修改 */
+      {
+        path: "development-history",
+        component: () => import("@/views/content/singlePage/developmentHistory/index.vue"),
+        name: "AboutUsDevelopmenthistory",
+        meta: {
+          title: "發展歷程",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+      /**年度重點企劃與展望，單頁式修改 */
+      {
+        path: "roadmap",
+        component: () => import("@/views/content/singlePage/roadmap/index.vue"),
+        name: "AboutUsRoadmap",
+        meta: {
+          title: "年度重點企劃與展望",
+          icon: "menu",
+          hidden: false,
+          roles: ["ADMIN"],
+          keepAlive: true,
+        },
+      },
+
+
+    ]
+  },
+
+
   {
     path: "/news-content",
     component: Layout,
