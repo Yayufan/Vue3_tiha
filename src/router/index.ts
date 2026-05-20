@@ -126,7 +126,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: {
           title: "會員審核",
           icon: "el-icon-Finished",
-          hidden: true,
+          hidden: false,
           roles: ["ADMIN"],
           keepAlive: true,
         },
